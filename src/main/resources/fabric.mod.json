@@ -17,7 +17,8 @@
 	"mixins": [ "deceased_croa.mixins.json" ],
 	"custom": {
 		"cardinal-components": [
-			"deceased_croa:deceased_info"
+			"deceased_croa:deceased_info",
+			"deceased_croa:mailbox"
 		]
 	},
 	"depends": {

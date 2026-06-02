@@ -1,3 +1,13 @@
 {
-    "effect.deceased_croa.aggro": "어그로"
+    "effect.deceased_croa.aggro": "어그로",
+    "menu.deceased_croa.mailbox.title": "우편함",
+    "menu.deceased_croa.mailbox.claim": "받기",
+    "menu.deceased_croa.mailbox.from": "발신자: %s",
+    "key.deceased_croa.ranking": "랭킹 확인",
+    "category.deceased_croa.general": "크로아",
+    "key.deceased_croa.mail.open": "우편함",
+    "menu.deceased_croa.mailbox.time.just_now": "방금 전",
+    "menu.deceased_croa.mailbox.time.minutes": "%d분 전",
+    "menu.deceased_croa.mailbox.time.hours": "%d시간 전",
+    "menu.deceased_croa.mailbox.time.days": "%d일 전"
 }

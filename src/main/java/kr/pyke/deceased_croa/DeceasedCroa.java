@@ -1,5 +1,6 @@
 package kr.pyke.deceased_croa;
 
+import kr.pyke.deceased_croa.command.MailboxCommand;
 import kr.pyke.deceased_croa.command.RankingCommand;
 import kr.pyke.deceased_croa.handler.DonationEventHandler;
 import kr.pyke.deceased_croa.handler.ServerLivingEntityEventHandler;
@@ -31,5 +32,6 @@ public class DeceasedCroa implements ModInitializer {
 		ServerTickEventHandler.register();
 
 		CommandRegistrationCallback.EVENT.register(RankingCommand::register);
+		CommandRegistrationCallback.EVENT.register(MailboxCommand::register);
 	}
 }
