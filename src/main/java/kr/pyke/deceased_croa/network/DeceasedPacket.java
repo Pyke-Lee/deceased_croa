@@ -2,6 +2,7 @@ package kr.pyke.deceased_croa.network;
 
 import kr.pyke.deceased_croa.network.pakcet.c2s.*;
 import kr.pyke.deceased_croa.network.pakcet.s2c.S2C_RequestAggroMobListPacket;
+import kr.pyke.deceased_croa.network.pakcet.s2c.S2C_SyncRandomBoxPacket;
 import kr.pyke.deceased_croa.network.pakcet.s2c.S2C_SyncRankingPacket;
 
 public class DeceasedPacket {
@@ -19,5 +20,6 @@ public class DeceasedPacket {
     public static void registerClient() {
         S2C_RequestAggroMobListPacket.register();
         S2C_SyncRankingPacket.register();
+        S2C_SyncRandomBoxPacket.register();
     }
 }

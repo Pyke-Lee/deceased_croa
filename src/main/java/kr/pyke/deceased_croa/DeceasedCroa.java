@@ -1,16 +1,21 @@
 package kr.pyke.deceased_croa;
 
 import kr.pyke.deceased_croa.command.MailboxCommand;
+import kr.pyke.deceased_croa.command.RandomBoxCommand;
 import kr.pyke.deceased_croa.command.RankingCommand;
 import kr.pyke.deceased_croa.handler.DonationEventHandler;
 import kr.pyke.deceased_croa.handler.ServerLivingEntityEventHandler;
 import kr.pyke.deceased_croa.handler.ServerPlayConnectionEventHandler;
 import kr.pyke.deceased_croa.handler.ServerTickEventHandler;
+import kr.pyke.deceased_croa.manager.RandomBoxManager;
 import kr.pyke.deceased_croa.network.DeceasedPacket;
+import kr.pyke.deceased_croa.registry.item.ModItems;
 import kr.pyke.deceased_croa.registry.mob_effect.ModEffects;
+import kr.pyke.deceased_croa.registry.tab.ModCreativeTabs;
 import net.fabricmc.api.ModInitializer;
 
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.minecraft.server.network.ServerPlayerConnection;
 import org.slf4j.Logger;
@@ -23,6 +28,8 @@ public class DeceasedCroa implements ModInitializer {
 	@Override
 	public void onInitialize() {
 		ModEffects.register();
+		ModItems.register();
+		ModCreativeTabs.register();
 
 		DeceasedPacket.registerServer();
 
@@ -31,7 +38,10 @@ public class DeceasedCroa implements ModInitializer {
 		ServerPlayConnectionEventHandler.register();
 		ServerTickEventHandler.register();
 
+		ServerLifecycleEvents.SERVER_STARTING.register(server -> RandomBoxManager.reload());
+
 		CommandRegistrationCallback.EVENT.register(RankingCommand::register);
 		CommandRegistrationCallback.EVENT.register(MailboxCommand::register);
+		CommandRegistrationCallback.EVENT.register(RandomBoxCommand::register);
 	}
 }
