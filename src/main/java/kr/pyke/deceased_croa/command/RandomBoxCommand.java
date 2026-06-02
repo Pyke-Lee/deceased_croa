@@ -4,12 +4,13 @@ import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
+import kr.pyke.PykeLib;
 import kr.pyke.deceased_croa.manager.RandomBoxManager;
 import kr.pyke.deceased_croa.network.pakcet.s2c.S2C_SyncRandomBoxPacket;
+import kr.pyke.util.constants.COLOR;
 import net.minecraft.commands.CommandBuildContext;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
-import net.minecraft.network.chat.Component;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.Container;
@@ -38,12 +39,14 @@ public class RandomBoxCommand {
         );
     }
 
-    private static int reload(CommandContext<CommandSourceStack> context) {
+    private static int reload(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
         int count = RandomBoxManager.reload();
 
         syncAll(context.getSource().getServer());
 
-        context.getSource().sendSuccess(() -> Component.literal("§6[SYSTEM]§r 랜덤 상자 " + count + "개를 불러왔습니다."), true);
+        ServerPlayer player = context.getSource().getPlayerOrException();
+
+        PykeLib.sendSystemMessage(player, COLOR.LIME.getColor(), String.format("§6[SYSTEM]§r 랜덤 상자 %s개를 불러왔습니다.", count));
 
         return 1;
     }
@@ -55,7 +58,7 @@ public class RandomBoxCommand {
 
         List<ItemStack> contents = lookingAtContainerContents(player);
         if (contents == null) {
-            context.getSource().sendFailure(Component.literal("§c바라보고 있는 상자가 없습니다."));
+            PykeLib.sendSystemMessage(player, COLOR.RED.getColor(), "§6[SYSTEM]§r 바라보고 있는 상자가 없습니다.");
             return 0;
         }
 
@@ -63,15 +66,15 @@ public class RandomBoxCommand {
 
         switch (result) {
             case ALREADY_EXISTS: {
-                context.getSource().sendFailure(Component.literal("§c이미 존재하는 id 입니다: " + boxID));
+                PykeLib.sendSystemMessage(player, COLOR.RED.getColor(), String.format("§6[SYSTEM]§r 이미 존재하는 id 입니다: %s", boxID));
                 return 0;
             }
             case EMPTY: {
-                context.getSource().sendFailure(Component.literal("§c상자가 비어 있습니다."));
+                PykeLib.sendSystemMessage(player, COLOR.RED.getColor(), "§6[SYSTEM]§r 상자가 비어 있습니다.");
                 return 0;
             }
             case ERROR: {
-                context.getSource().sendFailure(Component.literal("§c파일을 생성하지 못했습니다."));
+                PykeLib.sendSystemMessage(player, COLOR.RED.getColor(), "§6[SYSTEM]§r 파일을 생성하지 못했습니다.");
                 return 0;
             }
             default: {
@@ -82,7 +85,7 @@ public class RandomBoxCommand {
         int count = RandomBoxManager.reload();
         syncAll(context.getSource().getServer());
 
-        context.getSource().sendSuccess(() -> Component.literal("§6[SYSTEM]§r 랜덤 상자 '" + boxID + "' 를 생성했습니다. (총 " + count + "개)"), true);
+        PykeLib.sendSystemMessage(player, COLOR.LIME.getColor(), String.format("§6[SYSTEM]§r 랜덤 상자 '%s' 를 생성했습니다. (총 %d개)", boxID, count));
 
         return 1;
     }

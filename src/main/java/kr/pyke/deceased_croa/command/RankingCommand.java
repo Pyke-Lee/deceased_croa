@@ -2,9 +2,11 @@ package kr.pyke.deceased_croa.command;
 
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.context.CommandContext;
+import kr.pyke.PykeLib;
 import kr.pyke.deceased_croa.network.pakcet.s2c.S2C_SyncRankingPacket;
 import kr.pyke.deceased_croa.registry.component.ModComponents;
 import kr.pyke.deceased_croa.registry.component.info.IDeceasedInfo;
+import kr.pyke.util.constants.COLOR;
 import net.minecraft.commands.CommandBuildContext;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
@@ -34,7 +36,7 @@ public class RankingCommand {
 
         ranking(players);
 
-        players.broadcastSystemMessage(Component.literal("§6[SYSTEM]§r 몬스터 처치 랭킹이 갱신되었습니다."), false);
+        PykeLib.sendSystemMessage(players.getPlayers(), COLOR.LIME.getColor(), "§6[SYSTEM]§r 몬스터 처치 랭킹이 갱신되었습니다.");
 
         return 1;
     }
