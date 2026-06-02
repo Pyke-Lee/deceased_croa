@@ -5,8 +5,10 @@ import kr.pyke.deceased_croa.DeceasedCroa;
 import kr.pyke.deceased_croa.client.gui.menu.MailboxMenu;
 import kr.pyke.deceased_croa.data.MailboxData;
 import kr.pyke.deceased_croa.network.pakcet.c2s.C2S_ClaimMailPacket;
+import kr.pyke.deceased_croa.network.pakcet.c2s.C2S_OpenSendMailboxPacket;
 import kr.pyke.deceased_croa.network.pakcet.c2s.C2S_SelectMailPacket;
 import kr.pyke.deceased_croa.registry.component.ModComponents;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
@@ -16,7 +18,10 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.item.ItemStack;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class MailboxScreen extends AbstractContainerScreen<MailboxMenu> {
@@ -41,7 +46,6 @@ public class MailboxScreen extends AbstractContainerScreen<MailboxMenu> {
     private static final int HEADER_X = 107;
     private static final int HEADER_Y = 5;
     private static final int HEADER_WIDTH = 162;
-    private static final int HEADER_HEIGHT = 22;
 
     private final MailButton[] mailButtons = new MailButton[NUMBER_OF_MAIL_BUTTONS];
     private Button claimButton;
@@ -58,7 +62,9 @@ public class MailboxScreen extends AbstractContainerScreen<MailboxMenu> {
     }
 
     private List<MailboxData> mails() {
-        return ModComponents.MAILBOX.get(this.minecraft.player).getMails();
+        List<MailboxData> list = new ArrayList<>(ModComponents.MAILBOX.get(this.minecraft.player).getMails());
+        Collections.reverse(list);
+        return list;
     }
 
     @Override
@@ -85,6 +91,10 @@ public class MailboxScreen extends AbstractContainerScreen<MailboxMenu> {
             }
         }).bounds(i + 235, j + 81, 34, 18).build());
         this.claimButton.active = false;
+
+        if (this.minecraft.player.hasPermissions(2)) {
+            this.addRenderableWidget(Button.builder(Component.translatable("menu.deceased_croa.mailbox.send.open"), button -> C2S_OpenSendMailboxPacket.send()).bounds(i + this.imageWidth + 4, j + 4, 60, 18).build());
+        }
     }
 
     private void select(int index) {
@@ -172,8 +182,17 @@ public class MailboxScreen extends AbstractContainerScreen<MailboxMenu> {
         }
 
         this.renderTooltip(guiGraphics, mouseX, mouseY);
+
+        for(MailButton mailButton : this.mailButtons) {
+            if (mailButton.visible && mailButton.isHovered() && mailButton.getMail() != null && !mailButton.getMail().itemStackList().isEmpty()) {
+                this.renderAttachmentTooltip(guiGraphics, mailButton.getMail(), mouseX, mouseY);
+                break;
+            }
+        }
+
         RenderSystem.enableDepthTest();
     }
+
     private boolean canScroll(int count) { return count > NUMBER_OF_MAIL_BUTTONS; }
 
     @Override
@@ -213,6 +232,8 @@ public class MailboxScreen extends AbstractContainerScreen<MailboxMenu> {
     }
 
     static class MailButton extends Button {
+        private static final int TEXT_PADDING = 5;
+
         private final int index;
         private MailboxData mail;
 
@@ -230,6 +251,27 @@ public class MailboxScreen extends AbstractContainerScreen<MailboxMenu> {
         }
 
         public MailboxData getMail() { return mail; }
+
+        @Override
+        public void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
+            Minecraft minecraft = Minecraft.getInstance();
+            guiGraphics.blitNineSliced(WIDGETS_LOCATION, this.getX(), this.getY(), this.getWidth(), this.getHeight(), 20, 4, 200, 20, 0, this.getTextureY());
+            int color = this.active ? 16777215 : 10526880;
+            int textX = this.getX() + TEXT_PADDING;
+            int textY = this.getY() + (this.getHeight() - 8) / 2;
+            int clipRight = this.getX() + this.getWidth() - TEXT_PADDING;
+            guiGraphics.enableScissor(this.getX() + TEXT_PADDING, this.getY(), clipRight, this.getY() + this.getHeight());
+            guiGraphics.drawString(minecraft.font, this.getMessage(), textX, textY, color | (Mth.ceil(this.alpha * 255.f) << 24));
+            guiGraphics.disableScissor();
+        }
+
+        private int getTextureY() {
+            int i = 1;
+            if (!this.active) { i = 0; }
+            else if (this.isHoveredOrFocused()) { i = 2; }
+
+            return 46 + i * 20;
+        }
     }
 
     private Component formatRelativeTime(long epochMillis) {
@@ -246,5 +288,38 @@ public class MailboxScreen extends AbstractContainerScreen<MailboxMenu> {
 
         long days = hours / 24L;
         return Component.translatable("menu.deceased_croa.mailbox.time.days", days);
+    }
+
+    private void renderAttachmentTooltip(GuiGraphics guiGraphics, MailboxData mail, int mouseX, int mouseY) {
+        int slotSize = 18;
+        int padding = 1;
+        int panelWidth = MailboxMenu.PREVIEW_SLOT_COUNT * slotSize + padding * 2;
+        int panelHeight = slotSize + padding * 2;
+
+        int panelX = mouseX + 6;
+        if (panelX + panelWidth > this.width) { panelX = this.width - panelWidth; }
+
+        guiGraphics.pose().pushPose();
+        guiGraphics.pose().translate(0.f, 0.f, 400.f);
+
+        guiGraphics.fill(panelX, mouseY, panelX + panelWidth, mouseY + panelHeight, 0xF0100010);
+        guiGraphics.fill(panelX + 1, mouseY + 1, panelX + panelWidth - 1, mouseY + panelHeight - 1, 0xFF2D2D3A);
+
+        List<ItemStack> items = mail.itemStackList();
+        for(int i = 0; i < MailboxMenu.PREVIEW_SLOT_COUNT; ++i) {
+            int slotX = panelX + padding + i * slotSize + 1;
+            int slotY = mouseY + padding + 1;
+            guiGraphics.fill(slotX, slotY, slotX + 16, slotY + 16, 0xFF8B8B8B);
+
+            if (i < items.size()) {
+                ItemStack stack = items.get(i);
+                if (!stack.isEmpty()) {
+                    guiGraphics.renderFakeItem(stack, slotX, slotY);
+                    guiGraphics.renderItemDecorations(this.font, stack, slotX, slotY);
+                }
+            }
+        }
+
+        guiGraphics.pose().popPose();
     }
 }

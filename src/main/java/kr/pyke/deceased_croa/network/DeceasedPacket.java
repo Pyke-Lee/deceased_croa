@@ -1,9 +1,6 @@
 package kr.pyke.deceased_croa.network;
 
-import kr.pyke.deceased_croa.network.pakcet.c2s.C2S_ClaimMailPacket;
-import kr.pyke.deceased_croa.network.pakcet.c2s.C2S_OpenMailboxPacket;
-import kr.pyke.deceased_croa.network.pakcet.c2s.C2S_ResponseAggroMobListPacket;
-import kr.pyke.deceased_croa.network.pakcet.c2s.C2S_SelectMailPacket;
+import kr.pyke.deceased_croa.network.pakcet.c2s.*;
 import kr.pyke.deceased_croa.network.pakcet.s2c.S2C_RequestAggroMobListPacket;
 import kr.pyke.deceased_croa.network.pakcet.s2c.S2C_SyncRankingPacket;
 
@@ -15,6 +12,8 @@ public class DeceasedPacket {
         C2S_OpenMailboxPacket.register();
         C2S_ClaimMailPacket.register();
         C2S_SelectMailPacket.register();
+        C2S_SendMailPacket.register();
+        C2S_OpenSendMailboxPacket.register();
     }
 
     public static void registerClient() {

@@ -1,13 +1,23 @@
 {
     "effect.deceased_croa.aggro": "어그로",
+    "category.deceased_croa.general": "크로아",
+    "key.deceased_croa.ranking": "랭킹 확인",
+    "key.deceased_croa.mail.open": "우편함",
     "menu.deceased_croa.mailbox.title": "우편함",
     "menu.deceased_croa.mailbox.claim": "받기",
     "menu.deceased_croa.mailbox.from": "발신자: %s",
-    "key.deceased_croa.ranking": "랭킹 확인",
-    "category.deceased_croa.general": "크로아",
-    "key.deceased_croa.mail.open": "우편함",
     "menu.deceased_croa.mailbox.time.just_now": "방금 전",
     "menu.deceased_croa.mailbox.time.minutes": "%d분 전",
     "menu.deceased_croa.mailbox.time.hours": "%d시간 전",
-    "menu.deceased_croa.mailbox.time.days": "%d일 전"
+    "menu.deceased_croa.mailbox.time.days": "%d일 전",
+    "menu.deceased_croa.mailbox.send.title": "메일 보내기",
+    "menu.deceased_croa.mailbox.send.open": "보내기",
+    "menu.deceased_croa.mailbox.send.submit": "전송",
+    "menu.deceased_croa.mailbox.send.title_field": "제목",
+    "menu.deceased_croa.mailbox.send.title_hint": "제목",
+    "menu.deceased_croa.mailbox.send.recipient_field": "수신자",
+    "menu.deceased_croa.mailbox.send.recipient_hint": "받는 사람",
+    "menu.deceased_croa.mailbox.send.sender_field": "발신자",
+    "menu.deceased_croa.mailbox.send.message_field": "내용",
+    "menu.deceased_croa.mailbox.send.message_hint": "내용"
 }
