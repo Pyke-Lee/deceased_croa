@@ -16,7 +16,7 @@ import net.minecraft.world.item.ItemStack;
 public class ModCreativeTabs {
     public static final CreativeModeTab RANDOM_BOX = Registry.register(
         BuiltInRegistries.CREATIVE_MODE_TAB,
-        new ResourceLocation(DeceasedCroa.MOD_ID, "random_box.json"),
+        new ResourceLocation(DeceasedCroa.MOD_ID, "random_box"),
         FabricItemGroup.builder()
             .title(Component.literal("랜덤 상자"))
             .icon(() -> new ItemStack(ModItems.RANDOM_BOX))

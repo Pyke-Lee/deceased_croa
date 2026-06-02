@@ -8,7 +8,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 
 public class ModItems {
-    public static final Item RANDOM_BOX = register("random_box", new RandomBoxItem(new Item.Properties().stacksTo(99)));
+    public static final Item RANDOM_BOX = register("random_box", new RandomBoxItem(new Item.Properties().stacksTo(64)));
 
     private ModItems() { }
 

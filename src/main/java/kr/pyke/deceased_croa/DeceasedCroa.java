@@ -10,6 +10,7 @@ import kr.pyke.deceased_croa.handler.ServerTickEventHandler;
 import kr.pyke.deceased_croa.manager.RandomBoxManager;
 import kr.pyke.deceased_croa.network.DeceasedPacket;
 import kr.pyke.deceased_croa.registry.item.ModItems;
+import kr.pyke.deceased_croa.registry.menu.ModMenus;
 import kr.pyke.deceased_croa.registry.mob_effect.ModEffects;
 import kr.pyke.deceased_croa.registry.tab.ModCreativeTabs;
 import net.fabricmc.api.ModInitializer;
@@ -30,6 +31,7 @@ public class DeceasedCroa implements ModInitializer {
 		ModEffects.register();
 		ModItems.register();
 		ModCreativeTabs.register();
+		ModMenus.register();
 
 		DeceasedPacket.registerServer();
 
