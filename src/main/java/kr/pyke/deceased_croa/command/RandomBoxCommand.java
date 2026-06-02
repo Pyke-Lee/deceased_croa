@@ -7,6 +7,7 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import kr.pyke.PykeLib;
 import kr.pyke.deceased_croa.manager.RandomBoxManager;
 import kr.pyke.deceased_croa.network.pakcet.s2c.S2C_SyncRandomBoxPacket;
+import kr.pyke.deceased_croa.registry.tab.ModCreativeTabs;
 import kr.pyke.util.constants.COLOR;
 import net.minecraft.commands.CommandBuildContext;
 import net.minecraft.commands.CommandSourceStack;
