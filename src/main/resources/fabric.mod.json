@@ -1,0 +1,29 @@
+{
+	"schemaVersion": 1,
+	"id": "deceased_croa",
+	"version": "${version}",
+	"name": "deceased_croa",
+	"description": "",
+	"authors": [ "Pyke_Lee" ],
+	"contact": { },
+	"license": "LGPL 3.0",
+	"icon": "assets/deceased_croa/icon.png",
+	"environment": "*",
+	"entrypoints": {
+		"main": [ "kr.pyke.deceased_croa.DeceasedCroa" ],
+		"client": [ "kr.pyke.deceased_croa.client.DeceasedCroaClient" ],
+		"cardinal-components": [ "kr.pyke.deceased_croa.registry.component.ModComponents" ]
+	},
+	"mixins": [ "deceased_croa.mixins.json" ],
+	"custom": {
+		"cardinal-components": [
+			"deceased_croa:deceased_info"
+		]
+	},
+	"depends": {
+		"fabricloader": ">=0.16.2",
+		"minecraft": "~1.20.1",
+		"java": ">=17",
+		"fabric-api": "*"
+	}
+}
