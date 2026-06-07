@@ -27,7 +27,7 @@ public class RankingOverlay implements HudRenderCallback {
 
         Map<UUID, Integer> ranking = ClientCache.getRanking();
 
-        int boxWidth = 280;
+        int boxWidth = 200;
         int rowHeight = 16;
         int maxPlayersToShow = 10;
         int rowGap = 2;
@@ -46,7 +46,7 @@ public class RankingOverlay implements HudRenderCallback {
         guiGraphics.fill(x, y, x + boxWidth, y + totalHeight, 0xCC000000);
 
         int currentY = y;
-        Component title = Component.literal("§l몬스터 처치 랭킹");
+        Component title = Component.literal("§6몬스터 처치 랭킹");
 
         guiGraphics.drawString(font, title, screenWidth / 2 - font.width(title) / 2, currentY + 6, 0xFFFFFF, false);
 
@@ -73,11 +73,14 @@ public class RankingOverlay implements HudRenderCallback {
                 ResourceLocation skin = DefaultPlayerSkin.getDefaultSkin(uuid);
 
                 if (playerInfo != null) {
-                    name = playerInfo.getProfile().getName();
+                    Component displayName = playerInfo.getTabListDisplayName();
+                    if (displayName != null) { name = displayName.getString(); }
+                    else { name = playerInfo.getProfile().getName(); }
+
                     skin = playerInfo.getSkinLocation();
                 }
 
-                Component rankText = Component.literal(String.format("§f%2s위§r", rank));
+                Component rankText = Component.literal(String.format("§f%2s등§r", rank));
                 guiGraphics.drawString(font, rankText, x + 10, currentY + 4, 0xFFFFFF, false);
 
                 int headBoxX = x + 35;

@@ -1,12 +1,16 @@
 {
 	"required": true,
-	"package": "kr.pyke.mixin",
+	"package": "kr.pyke.deceased_croa.mixin",
 	"compatibilityLevel": "JAVA_17",
 	"mixins": [
-
+		"client.EntityArgumentMixin",
+		"server.EntitySelectorParserMixin",
+		"server.PlayerMixin",
+		"server.ServerGamePacketListenerImplMixin",
+		"server.ServerPlayerMixin"
 	],
 	"client": [
-
+		"server.PlayerRendererMixin"
 	],
 	"injectors": {
 		"defaultRequire": 1

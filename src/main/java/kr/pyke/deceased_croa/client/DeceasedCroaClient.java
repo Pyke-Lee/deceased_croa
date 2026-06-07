@@ -2,6 +2,7 @@ package kr.pyke.deceased_croa.client;
 
 import kr.pyke.deceased_croa.client.gui.hud.DeceasedHud;
 import kr.pyke.deceased_croa.client.gui.hud.RankingOverlay;
+import kr.pyke.deceased_croa.client.gui.hud.RankingSidebarOverlay;
 import kr.pyke.deceased_croa.client.gui.screen.MailboxScreen;
 import kr.pyke.deceased_croa.client.gui.screen.SendMailboxScreen;
 import kr.pyke.deceased_croa.client.key.ModKeyBinding;
@@ -19,6 +20,7 @@ public class DeceasedCroaClient implements ClientModInitializer {
         ModKeyBinding.register();
 
         HudRenderCallback.EVENT.register(new DeceasedHud());
+        HudRenderCallback.EVENT.register(new RankingSidebarOverlay());
         HudRenderCallback.EVENT.register(new RankingOverlay());
 
         MenuScreens.register(ModMenus.MAILBOX, MailboxScreen::new);

@@ -1,5 +1,6 @@
 package kr.pyke.deceased_croa;
 
+import kr.pyke.deceased_croa.command.DisplayNameCommand;
 import kr.pyke.deceased_croa.command.MailboxCommand;
 import kr.pyke.deceased_croa.command.RandomBoxCommand;
 import kr.pyke.deceased_croa.command.RankingCommand;
@@ -14,20 +15,22 @@ import kr.pyke.deceased_croa.registry.menu.ModMenus;
 import kr.pyke.deceased_croa.registry.mob_effect.ModEffects;
 import kr.pyke.deceased_croa.registry.tab.ModCreativeTabs;
 import net.fabricmc.api.ModInitializer;
-
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
-import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
-import net.minecraft.server.network.ServerPlayerConnection;
+import net.minecraft.server.MinecraftServer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class DeceasedCroa implements ModInitializer {
 	public static final String MOD_ID = "deceased_croa";
 	public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
+	public static MinecraftServer SERVER_INSTANCE;
 
 	@Override
 	public void onInitialize() {
+		ServerLifecycleEvents.SERVER_STARTING.register(server -> SERVER_INSTANCE = server);
+		ServerLifecycleEvents.SERVER_STOPPED.register(server -> SERVER_INSTANCE = null);
+
 		ModEffects.register();
 		ModItems.register();
 		ModCreativeTabs.register();
@@ -45,5 +48,6 @@ public class DeceasedCroa implements ModInitializer {
 		CommandRegistrationCallback.EVENT.register(RankingCommand::register);
 		CommandRegistrationCallback.EVENT.register(MailboxCommand::register);
 		CommandRegistrationCallback.EVENT.register(RandomBoxCommand::register);
+		CommandRegistrationCallback.EVENT.register(DisplayNameCommand::register);
 	}
 }
