@@ -19,5 +19,6 @@
     "menu.deceased_croa.mailbox.send.recipient_hint": "받는 사람",
     "menu.deceased_croa.mailbox.send.sender_field": "발신자",
     "menu.deceased_croa.mailbox.send.message_field": "내용",
-    "menu.deceased_croa.mailbox.send.message_hint": "내용"
+    "menu.deceased_croa.mailbox.send.message_hint": "내용",
+    "item.deceased_croa.coin.croa": "크로아 코인"
 }

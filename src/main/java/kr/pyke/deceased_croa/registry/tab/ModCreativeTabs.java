@@ -28,6 +28,18 @@ public class ModCreativeTabs {
             .build()
     );
 
+    public static final CreativeModeTab GENERAL = Registry.register(
+        BuiltInRegistries.CREATIVE_MODE_TAB,
+        new ResourceLocation(DeceasedCroa.MOD_ID, "general"),
+        FabricItemGroup.builder()
+            .title(Component.literal("Deceased Croa"))
+            .icon(() -> new ItemStack(ModItems.CROA_COIN))
+            .displayItems((parameters, output) -> {
+                output.accept(ModItems.CROA_COIN);
+            })
+            .build()
+    );
+
     private ModCreativeTabs() { }
 
     public static void register() { }
