@@ -1,6 +1,5 @@
 package kr.pyke.deceased_croa.handler;
 
-import kr.pyke.deceased_croa.DeceasedCroa;
 import kr.pyke.deceased_croa.registry.component.ModComponents;
 import kr.pyke.deceased_croa.registry.component.info.IDeceasedInfo;
 import net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents;
@@ -21,7 +20,7 @@ public class ServerLivingEntityEventHandler {
 
             if (entity instanceof Player player) {
                 IDeceasedInfo info = ModComponents.DECEASED_INFO.get(player);
-                info.setMonsterKillCount(0);
+                info.resetMonsterKillCount();
             }
         });
     }

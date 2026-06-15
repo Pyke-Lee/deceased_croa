@@ -1,9 +1,7 @@
 package kr.pyke.deceased_croa;
 
-import kr.pyke.deceased_croa.command.DisplayNameCommand;
-import kr.pyke.deceased_croa.command.MailboxCommand;
-import kr.pyke.deceased_croa.command.RandomBoxCommand;
-import kr.pyke.deceased_croa.command.RankingCommand;
+import kr.pyke.deceased_croa.command.*;
+import kr.pyke.deceased_croa.config.ConfigLoader;
 import kr.pyke.deceased_croa.handler.DonationEventHandler;
 import kr.pyke.deceased_croa.handler.ServerLivingEntityEventHandler;
 import kr.pyke.deceased_croa.handler.ServerPlayConnectionEventHandler;
@@ -13,6 +11,7 @@ import kr.pyke.deceased_croa.network.DeceasedPacket;
 import kr.pyke.deceased_croa.registry.item.ModItems;
 import kr.pyke.deceased_croa.registry.menu.ModMenus;
 import kr.pyke.deceased_croa.registry.mob_effect.ModEffects;
+import kr.pyke.deceased_croa.registry.sound.ModSounds;
 import kr.pyke.deceased_croa.registry.tab.ModCreativeTabs;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
@@ -31,10 +30,13 @@ public class DeceasedCroa implements ModInitializer {
 		ServerLifecycleEvents.SERVER_STARTING.register(server -> SERVER_INSTANCE = server);
 		ServerLifecycleEvents.SERVER_STOPPED.register(server -> SERVER_INSTANCE = null);
 
+		ConfigLoader.load();
+
 		ModEffects.register();
 		ModItems.register();
 		ModCreativeTabs.register();
 		ModMenus.register();
+		ModSounds.register();
 
 		DeceasedPacket.registerServer();
 
@@ -49,5 +51,6 @@ public class DeceasedCroa implements ModInitializer {
 		CommandRegistrationCallback.EVENT.register(MailboxCommand::register);
 		CommandRegistrationCallback.EVENT.register(RandomBoxCommand::register);
 		CommandRegistrationCallback.EVENT.register(DisplayNameCommand::register);
+		CommandRegistrationCallback.EVENT.register(HordeCommand::register);
 	}
 }

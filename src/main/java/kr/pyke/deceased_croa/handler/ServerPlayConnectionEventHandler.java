@@ -1,5 +1,7 @@
 package kr.pyke.deceased_croa.handler;
 
+import kr.pyke.deceased_croa.data.DisplayNameData;
+import kr.pyke.deceased_croa.network.pakcet.s2c.S2C_SendBulkDisplayName;
 import kr.pyke.deceased_croa.network.pakcet.s2c.S2C_SyncRandomBoxPacket;
 import kr.pyke.deceased_croa.network.pakcet.s2c.S2C_SyncRankingPacket;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
@@ -14,6 +16,7 @@ public class ServerPlayConnectionEventHandler {
 
             S2C_SyncRankingPacket.send(serverPlayer);
             S2C_SyncRandomBoxPacket.send(serverPlayer);
+            S2C_SendBulkDisplayName.send(serverPlayer, DisplayNameData.getServerState(server).getDisplayNames());
         });
     }
 }

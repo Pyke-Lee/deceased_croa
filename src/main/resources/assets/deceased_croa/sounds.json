@@ -1,3 +1,14 @@
 {
-
+    "custom_sound.fanfare": {
+        "subtitle": "subtitles.deceased_croa.custom_sound.fanfare",
+        "sounds": [
+            "deceased_croa:fanfare"
+        ]
+    },
+    "custom_sound.normal_hordes": {
+        "subtitle": "subtitles.deceased_croa.custom_sound.normal_hordes",
+        "sounds": [
+            "deceased_croa:normal_hordes"
+        ]
+    }
 }

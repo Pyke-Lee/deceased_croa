@@ -1,8 +1,10 @@
 package kr.pyke.deceased_croa.registry.item.randombox;
 
+import kr.pyke.deceased_croa.client.key.ModKeyBinding;
 import kr.pyke.deceased_croa.data.RandomBoxDefinition;
 import kr.pyke.deceased_croa.data.RandomBoxReward;
 import kr.pyke.deceased_croa.manager.RandomBoxManager;
+import kr.pyke.deceased_croa.util.ClientHelper;
 import net.minecraft.ChatFormatting;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -58,6 +60,8 @@ public class RandomBoxItem extends Item {
     public void appendHoverText(ItemStack stack, Level level, List<Component> tooltip, TooltipFlag flag) {
         super.appendHoverText(stack, level, tooltip, flag);
 
+        if (level != null && !level.isClientSide()) { return; }
+
         String boxID = getBoxID(stack);
         if (boxID == null) { return; }
 
@@ -67,6 +71,10 @@ public class RandomBoxItem extends Item {
         List<RandomBoxReward> rewards = definition.rewards();
         int totalWeight = definition.totalWeight();
         int shown = Math.min(rewards.size(), TOOLTIP_REWARD_LIMIT);
+
+        if (ClientHelper.isKeyDown()) {
+            shown = rewards.size();
+        }
 
         for (int i = 0; i < shown; ++i) {
             RandomBoxReward reward = rewards.get(i);
@@ -78,7 +86,7 @@ public class RandomBoxItem extends Item {
 
         int remaining = rewards.size() - shown;
         if (remaining > 0) {
-            tooltip.add(Component.literal("외 " + remaining + "개").withStyle(ChatFormatting.DARK_GRAY));
+            tooltip.add(Component.literal("외 " + remaining + "개 (상세보기: " + ModKeyBinding.detailsRandomBoxKey.getTranslatedKeyMessage().getString() + ")").withStyle(ChatFormatting.DARK_GRAY));
         }
     }
 

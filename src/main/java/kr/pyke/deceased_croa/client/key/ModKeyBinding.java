@@ -12,6 +12,7 @@ import org.lwjgl.glfw.GLFW;
 public class ModKeyBinding {
     public static KeyMapping rankingKey;
     public static KeyMapping openMailboxKey;
+    public static KeyMapping detailsRandomBoxKey;
 
     private ModKeyBinding() { }
 
@@ -27,7 +28,14 @@ public class ModKeyBinding {
             "key.deceased_croa.mail.open",
             InputConstants.Type.KEYSYM,
             GLFW.GLFW_KEY_P,
-            "category.deceased_croa.general"
+            "category.deceased_croa.mailbox"
+        ));
+
+        detailsRandomBoxKey = KeyBindingHelper.registerKeyBinding(new KeyMapping(
+            "key.deceased_croa.randombox.details",
+            InputConstants.Type.KEYSYM,
+            GLFW.GLFW_KEY_LEFT_SHIFT,
+            "category.deceased_croa.randombox"
         ));
 
         ClientTickEvents.END_CLIENT_TICK.register(client -> {

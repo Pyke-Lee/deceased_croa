@@ -291,9 +291,11 @@ public class MailboxScreen extends AbstractContainerScreen<MailboxMenu> {
     }
 
     private void renderAttachmentTooltip(GuiGraphics guiGraphics, MailboxData mail, int mouseX, int mouseY) {
+        List<ItemStack> items = mail.itemStackList();
+
         int slotSize = 18;
         int padding = 1;
-        int panelWidth = MailboxMenu.PREVIEW_SLOT_COUNT * slotSize + padding * 2;
+        int panelWidth = items.size() * slotSize + padding * 2;
         int panelHeight = slotSize + padding * 2;
 
         int panelX = mouseX + 6;
@@ -304,9 +306,7 @@ public class MailboxScreen extends AbstractContainerScreen<MailboxMenu> {
 
         guiGraphics.fill(panelX, mouseY, panelX + panelWidth, mouseY + panelHeight, 0xF0100010);
         guiGraphics.fill(panelX + 1, mouseY + 1, panelX + panelWidth - 1, mouseY + panelHeight - 1, 0xFF2D2D3A);
-
-        List<ItemStack> items = mail.itemStackList();
-        for(int i = 0; i < MailboxMenu.PREVIEW_SLOT_COUNT; ++i) {
+        for(int i = 0; i < items.size(); ++i) {
             int slotX = panelX + padding + i * slotSize + 1;
             int slotY = mouseY + padding + 1;
             guiGraphics.fill(slotX, slotY, slotX + 16, slotY + 16, 0xFF8B8B8B);

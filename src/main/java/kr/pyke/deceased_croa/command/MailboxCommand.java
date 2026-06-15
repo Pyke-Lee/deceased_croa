@@ -40,7 +40,7 @@ public class MailboxCommand {
         ServerPlayer player = context.getSource().getPlayerOrException();
 
         MailboxData mailboxData = MailboxData.create("테스트", "시스템", "테스트용 메일입니다.", List.of(new ItemStack(Items.STONE, 64), new ItemStack(Items.STONE, 64), new ItemStack(Items.STONE, 64), new ItemStack(Items.STONE, 64), new ItemStack(Items.STONE, 64), new ItemStack(Items.STONE, 64), new ItemStack(Items.STONE, 64)));
-        ModComponents.MAILBOX.get(player).addMail(mailboxData);
+        ModComponents.MAILBOX.get(player).addMail(mailboxData, true);
 
         return 1;
     }

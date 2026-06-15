@@ -6,7 +6,43 @@
     "overrides": [
         {
             "predicate": { "custom_model_data": 1 },
-            "model": "deceased_croa:item/random_box/1"
+            "model": "deceased_croa:item/random_box/premium"
+        },
+        {
+            "predicate": { "custom_model_data": 2 },
+            "model": "deceased_croa:item/random_box/food"
+        },
+        {
+            "predicate": { "custom_model_data": 3 },
+            "model": "deceased_croa:item/random_box/medikit"
+        },
+        {
+            "predicate": { "custom_model_data": 4 },
+            "model": "deceased_croa:item/random_box/gun"
+        },
+        {
+            "predicate": { "custom_model_data": 5 },
+            "model": "deceased_croa:item/random_box/bullet"
+        },
+        {
+            "predicate": { "custom_model_data": 6 },
+            "model": "deceased_croa:item/random_box/ride"
+        },
+        {
+            "predicate": { "custom_model_data": 7 },
+            "model": "deceased_croa:item/random_box/t2"
+        },
+        {
+            "predicate": { "custom_model_data": 8 },
+            "model": "deceased_croa:item/random_box/t3"
+        },
+        {
+            "predicate": { "custom_model_data": 9 },
+            "model": "deceased_croa:item/random_box/t4"
+        },
+        {
+            "predicate": { "custom_model_data": 10 },
+            "model": "deceased_croa:item/random_box/accessories"
         }
     ]
 }

@@ -9,4 +9,10 @@ public interface IDeceasedInfo extends ComponentV3, AutoSyncedComponent {
     void setMonsterKillCount(int value);
 
     int getMonsterKillCount();
+
+    void setHighMonsterKillCount(int value);
+
+    int getHighMonsterKillCount();
+
+    void resetMonsterKillCount();
 }

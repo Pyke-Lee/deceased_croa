@@ -25,8 +25,8 @@ public class RankingSidebarOverlay implements HudRenderCallback {
         int screenWidth = guiGraphics.guiWidth();
         int screenHeight = guiGraphics.guiHeight();
 
-        int maxPlayersToShow = 5;
-        int boxWidth = 100;
+        int maxPlayersToShow = 3;
+        int boxWidth = 110;
         int rowHeight = 14;
         int rowGap = 1;
         int headerHeight = 16;

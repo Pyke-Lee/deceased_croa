@@ -23,8 +23,10 @@ import net.minecraft.network.protocol.game.ClientboundSoundPacket;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.Container;
 import net.minecraft.world.item.ItemStack;
 
 import java.io.IOException;
@@ -55,6 +57,12 @@ public class RandomBoxManager {
         ALREADY_EXISTS,
         EMPTY,
         ERROR
+    }
+
+    public enum ExtractResult {
+        SUCCESS,
+        NOT_FOUND,
+        NOT_ENOUGH_SPACE
     }
 
     private static Path directory() {
@@ -112,7 +120,10 @@ public class RandomBoxManager {
         JsonObject root = new JsonObject();
         root.addProperty("custom_model_data", 0);
         root.addProperty("display_name", displayName);
-        root.addProperty("mailbox", false);
+        root.addProperty("mailbox", true);
+        root.addProperty("open_sound", "minecraft:block.amethyst_block.chime");
+        root.addProperty("open_message_type", "personal");
+        root.addProperty("open_message", "§7%player%§r님이 프리미엄 상자에서 §7%item%§r를 §e%count%§r개 획득하셨습니다!");
         root.add("rewards", rewards);
 
         try {
@@ -125,6 +136,21 @@ public class RandomBoxManager {
         }
 
         return CreateResult.SUCCESS;
+    }
+
+    public static ExtractResult extractToContainer(String boxID, Container container) {
+        RandomBoxDefinition definition = DEFINITIONS.get(boxID);
+        if (definition == null) { return ExtractResult.NOT_FOUND; }
+
+        List<RandomBoxReward> rewards = definition.rewards();
+        if (rewards.size() > container.getContainerSize()) { return ExtractResult.NOT_ENOUGH_SPACE; }
+
+        container.clearContent();
+        for (int i = 0; i < rewards.size(); ++i) {
+            container.setItem(i, rewards.get(i).createStack());
+        }
+
+        return ExtractResult.SUCCESS;
     }
 
     private static void loadFile(Path file) {
@@ -231,7 +257,7 @@ public class RandomBoxManager {
         items.add(stack.copy());
 
         MailboxData mail = MailboxData.create(title, "시스템", "", items);
-        ModComponents.MAILBOX.get(player).addMail(mail);
+        ModComponents.MAILBOX.get(player).addMail(mail, false);
     }
 
     private static void giveToInventory(ServerPlayer player, ItemStack stack) {

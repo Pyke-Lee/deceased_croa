@@ -46,7 +46,7 @@ public class RankingCommand {
         players.getPlayers().forEach(player -> {
             IDeceasedInfo info = ModComponents.DECEASED_INFO.get(player);
 
-            int killCount = info.getMonsterKillCount();
+            int killCount = info.getHighMonsterKillCount();
             if (killCount > 0 && !(player.isCreative() || player.isSpectator())) { ranking.put(player.getUUID(), killCount); }
         });
 

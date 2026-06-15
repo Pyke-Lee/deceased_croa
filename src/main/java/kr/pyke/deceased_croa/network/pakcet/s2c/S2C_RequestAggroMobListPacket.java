@@ -2,6 +2,7 @@ package kr.pyke.deceased_croa.network.pakcet.s2c;
 
 import kr.pyke.deceased_croa.DeceasedCroa;
 import kr.pyke.deceased_croa.network.pakcet.c2s.C2S_ResponseAggroMobListPacket;
+import kr.pyke.deceased_croa.registry.mob_effect.aggro.ClientAggro;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
@@ -20,25 +21,7 @@ public class S2C_RequestAggroMobListPacket {
     public static final ResourceLocation ID = new ResourceLocation(DeceasedCroa.MOD_ID, "request_aggro_moblist");
 
     public static void register() {
-        ClientPlayNetworking.registerGlobalReceiver(ID, (client, listener, buf, sender) -> {
-            float radius = buf.readFloat();
-            int duration = buf.readInt();
-
-            client.execute(() -> {
-                LocalPlayer player = client.player;
-                if (player == null || client.level == null) { return; }
-
-                double radiusSqr = radius * radius;
-                AABB aabb = player.getBoundingBox().inflate(radius);
-
-                List<Integer> ids = new ArrayList<>();
-                for (Monster mob : client.level.getEntitiesOfClass(Monster.class, aabb, m -> m.distanceToSqr(player) <= radiusSqr && (!m.hasEffect(MobEffects.GLOWING) || m.getTarget() != player))) {
-                    ids.add(mob.getId());
-                }
-
-                C2S_ResponseAggroMobListPacket.send(ids, radiusSqr, duration);
-            });
-        });
+        ClientAggro.register();
     }
 
     public static void send(ServerPlayer player, float radius, int duration) {

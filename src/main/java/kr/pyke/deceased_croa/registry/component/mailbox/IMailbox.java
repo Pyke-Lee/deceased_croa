@@ -9,7 +9,7 @@ import java.util.List;
 
 public interface IMailbox extends ComponentV3, AutoSyncedComponent {
     List<MailboxData> getMails();
-    void addMail(MailboxData mail);
+    void addMail(MailboxData mail, boolean viewMessage);
     void removeMail(MailboxData mail);
     void clearAll();
     void claimMail(Player player, MailboxData mail);

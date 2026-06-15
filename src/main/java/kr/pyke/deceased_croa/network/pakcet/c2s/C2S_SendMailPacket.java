@@ -41,7 +41,7 @@ public class C2S_SendMailPacket {
                     for(ItemStack stack : attachments) { copied.add(stack.copy()); }
 
                     MailboxData mail = MailboxData.create(mailTitle, senderName, message, copied);
-                    ModComponents.MAILBOX.get(target).addMail(mail);
+                    ModComponents.MAILBOX.get(target).addMail(mail, true);
                 }
 
                 sendMailboxMenu.clearAttachments();

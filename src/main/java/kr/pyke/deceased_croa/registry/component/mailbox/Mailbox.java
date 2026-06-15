@@ -27,9 +27,9 @@ public class Mailbox implements IMailbox {
     @Override public List<MailboxData> getMails() { return this.mailboxData; }
 
     @Override
-    public void addMail(MailboxData mail) {
+    public void addMail(MailboxData mail, boolean viewMessage) {
         mailboxData.add(mail);
-        PykeLib.sendSystemMessage((ServerPlayer) player, COLOR.YELLOW.getColor(), "새 우편이 도착했습니다!");
+        if (viewMessage) { PykeLib.sendSystemMessage((ServerPlayer) player, COLOR.YELLOW.getColor(), "새 우편이 도착했습니다!"); }
         this.player.playSound(SoundEvents.EXPERIENCE_ORB_PICKUP, 1.f, 1.f);
         ModComponents.MAILBOX.sync(player);
     }

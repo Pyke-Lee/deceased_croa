@@ -1,4 +1,4 @@
-package kr.pyke.deceased_croa.mixin.server;
+package kr.pyke.deceased_croa.mixin.client;
 
 import kr.pyke.deceased_croa.client.cache.ClientCache;
 import net.minecraft.client.player.AbstractClientPlayer;
