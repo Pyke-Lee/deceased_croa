@@ -6,7 +6,6 @@ import kr.pyke.deceased_croa.registry.component.ModComponents;
 import kr.pyke.util.constants.COLOR;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
-import net.minecraft.nbt.Tag;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.player.Player;
@@ -48,13 +47,11 @@ public class Mailbox implements IMailbox {
 
     @Override
     public void claimMail(Player player, MailboxData mail) {
-        for(ItemStack itemStack : mail.itemStackList()) {
-            ItemStack copyItem = itemStack.copy();
-            player.getInventory().add(copyItem);
+        ItemStack copyItem = mail.itemStack().copy();
+        player.getInventory().add(copyItem);
 
-            if (!copyItem.isEmpty()) {
-                player.drop(copyItem, false);
-            }
+        if (!copyItem.isEmpty()) {
+            player.drop(copyItem, false);
         }
 
         mailboxData.remove(mail);
@@ -71,22 +68,12 @@ public class Mailbox implements IMailbox {
             CompoundTag mailTag = mailsTag.getCompound(i);
 
             UUID uuid = mailTag.getUUID("UUID");
-            String title = mailTag.getString("Title");
-            String sender = mailTag.getString("Sender");
             long date = mailTag.getLong("Date");
-            String message = mailTag.getString("Message");
 
-            List<ItemStack> items = new ArrayList<>();
-            ListTag itemsTag = mailTag.getList("Items", ListTag.TAG_COMPOUND);
+            CompoundTag itemTag = mailTag.getCompound("Item");
+            ItemStack itemStack = ItemStack.of(itemTag);
 
-            for (Tag value : itemsTag) {
-                ItemStack itemStack = ItemStack.of((CompoundTag) value);
-                if (!itemStack.isEmpty()) {
-                    items.add(itemStack);
-                }
-            }
-
-            mailboxData.add(new MailboxData(uuid, title, sender, date, message, items));
+            mailboxData.add(new MailboxData(uuid, date, itemStack));
         }
     }
 
@@ -98,18 +85,11 @@ public class Mailbox implements IMailbox {
             CompoundTag mailTag = new CompoundTag();
 
             mailTag.putUUID("UUID", mail.mailUUID());
-            mailTag.putString("Title", mail.mailTitle());
-            mailTag.putString("Sender", mail.senderName());
             mailTag.putLong("Date", mail.sentDate());
-            mailTag.putString("Message", mail.mailMessage());
 
-            ListTag itemsTag = new ListTag();
-            for (ItemStack item : mail.itemStackList()) {
-                if (!item.isEmpty()) {
-                    itemsTag.add(item.save(new CompoundTag()));
-                }
-            }
-            mailTag.put("Items", itemsTag);
+            CompoundTag itemTag = new CompoundTag();
+            mail.itemStack().save(itemTag);
+            mailTag.put("Item", itemTag);
 
             mailsTag.add(mailTag);
         }

@@ -21,5 +21,6 @@ public class DeceasedPacket {
         S2C_SyncRandomBoxPacket.register();
         S2C_SendSingleDisplayName.register();
         S2C_SendBulkDisplayName.register();
+        S2C_PlaySoundPacket.register();
     }
 }

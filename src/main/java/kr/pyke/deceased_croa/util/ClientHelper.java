@@ -3,8 +3,16 @@ package kr.pyke.deceased_croa.util;
 import com.mojang.blaze3d.platform.InputConstants;
 import kr.pyke.deceased_croa.DeceasedCroa;
 import kr.pyke.deceased_croa.client.key.ModKeyBinding;
+import kr.pyke.deceased_croa.network.pakcet.s2c.S2C_PlaySoundPacket;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.resources.sounds.SimpleSoundInstance;
+import net.minecraft.client.resources.sounds.SoundInstance;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundSource;
 import org.lwjgl.glfw.GLFW;
 
 public class ClientHelper {
@@ -33,5 +41,21 @@ public class ClientHelper {
         }
 
         return isDown;
+    }
+
+    public static void registerSoundPacket() {
+        ClientPlayNetworking.registerGlobalReceiver(S2C_PlaySoundPacket.ID, (client, handler, buf, responseSender) -> {
+            ResourceLocation soundID = buf.readResourceLocation();
+            SoundSource source = buf.readEnum(SoundSource.class);
+            float volume = buf.readFloat();
+            float pitch = buf.readFloat();
+
+            client.execute(() -> {
+                SoundEvent sound = BuiltInRegistries.SOUND_EVENT.get(soundID);
+                if (sound == null) { return; }
+
+                client.getSoundManager().play(new SimpleSoundInstance(sound.getLocation(), source, volume, pitch, SoundInstance.createUnseededRandom(), false, 0, SimpleSoundInstance.Attenuation.NONE, 0.f, 0.f, 0.f, true));
+            });
+        });
     }
 }

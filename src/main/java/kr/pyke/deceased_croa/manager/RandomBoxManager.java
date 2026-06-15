@@ -1,30 +1,23 @@
 package kr.pyke.deceased_croa.manager;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
+import com.google.gson.*;
 import kr.pyke.deceased_croa.DeceasedCroa;
 import kr.pyke.deceased_croa.data.MailboxData;
 import kr.pyke.deceased_croa.data.RandomBoxDefinition;
 import kr.pyke.deceased_croa.data.RandomBoxReward;
+import kr.pyke.deceased_croa.network.pakcet.s2c.S2C_PlaySoundPacket;
 import kr.pyke.deceased_croa.registry.component.ModComponents;
+import kr.pyke.deceased_croa.registry.sound.ModSounds;
 import kr.pyke.deceased_croa.type.MESSAGE_TYPE;
 import kr.pyke.util.constants.COLOR;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.ChatFormatting;
-import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.TagParser;
-import net.minecraft.network.protocol.game.ClientboundSoundPacket;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
-import net.minecraft.sounds.SoundEvents;
-import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.Container;
 import net.minecraft.world.item.ItemStack;
@@ -123,7 +116,7 @@ public class RandomBoxManager {
         root.addProperty("mailbox", true);
         root.addProperty("open_sound", "minecraft:block.amethyst_block.chime");
         root.addProperty("open_message_type", "personal");
-        root.addProperty("open_message", "§7%player%§r님이 프리미엄 상자에서 §7%item%§r를 §e%count%§r개 획득하셨습니다!");
+        root.addProperty("open_message", "§b%player%§r님이 상자에서 §c[ %item% ]§r(을)를 §e%count%§r개 획득하셨습니다!");
         root.add("rewards", rewards);
 
         try {
@@ -277,12 +270,10 @@ public class RandomBoxManager {
         if (soundLocation == null) { return; }
 
         SoundEvent soundEvent = SoundEvent.createVariableRangeEvent(soundLocation);
-        Holder<SoundEvent> soundHolder = Holder.direct(soundEvent);
 
         MESSAGE_TYPE messageType = reward.resolveMessageType(box);
         for (ServerPlayer target : messageType.soundTargets(player)) {
-            ClientboundSoundPacket packet = new ClientboundSoundPacket(soundHolder, SoundSource.PLAYERS, target.getX(), target.getY(), target.getZ(), 1.f, 1.f, target.level().getRandom().nextLong());
-            target.connection.send(packet);
+            S2C_PlaySoundPacket.send(target, soundEvent, ModSounds.NOTIFICATION, 1.f, 1.f);
         }
     }
 
@@ -290,10 +281,10 @@ public class RandomBoxManager {
         String template = reward.resolveMessage(box);
         if (template == null || template.isBlank()) { return; }
 
-        String itemName = stack.getHoverName().getString();
+        String itemName = stack.getDisplayName().getString();
         String message = template
             .replace("%player%", player.getDisplayName().getString())
-            .replace("%item%", itemName)
+            .replace("%item%", itemName.substring(1, itemName.length() - 1))
             .replace("%count%", String.valueOf(stack.getCount()));
 
         MESSAGE_TYPE messageType = reward.resolveMessageType(box);
