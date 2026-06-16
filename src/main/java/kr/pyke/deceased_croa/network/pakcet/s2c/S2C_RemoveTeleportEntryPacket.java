@@ -3,6 +3,8 @@ package kr.pyke.deceased_croa.network.pakcet.s2c;
 import io.netty.buffer.Unpooled;
 import kr.pyke.deceased_croa.DeceasedCroa;
 import kr.pyke.deceased_croa.client.cache.ClientCache;
+import kr.pyke.deceased_croa.type.CREATIVE_MODE_TABS;
+import kr.pyke.deceased_croa.util.ClientHelper;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
@@ -24,7 +26,10 @@ public class S2C_RemoveTeleportEntryPacket {
     public static void register() {
         ClientPlayNetworking.registerGlobalReceiver(ID, (client, handler, buf, responseSender) -> {
             String id = buf.readUtf();
-            client.execute(() -> ClientCache.removeTeleportEntry(id));
+            client.execute(() -> {
+                ClientCache.removeTeleportEntry(id);
+                ClientHelper.rebuildCreativeModeTab(client, CREATIVE_MODE_TABS.TELEPORT_RUNE);
+            });
         });
     }
 }

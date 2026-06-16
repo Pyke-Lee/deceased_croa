@@ -4,6 +4,7 @@ import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
+import com.mojang.brigadier.suggestion.SuggestionProvider;
 import kr.pyke.PykeLib;
 import kr.pyke.deceased_croa.data.TeleportData;
 import kr.pyke.deceased_croa.network.pakcet.s2c.S2C_RemoveTeleportEntryPacket;
@@ -12,23 +13,26 @@ import kr.pyke.util.constants.COLOR;
 import net.minecraft.commands.CommandBuildContext;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
+import net.minecraft.commands.SharedSuggestionProvider;
 import net.minecraft.server.level.ServerPlayer;
 
 public class TeleportCommand {
+    private static final SuggestionProvider<CommandSourceStack> SUGGEST_TELEPORT_ID = (context, builder) -> SharedSuggestionProvider.suggest(TeleportData.getServerState(context.getSource().getServer()).getEntries().keySet(), builder);
+
     private TeleportCommand() { }
 
     public static void register(CommandDispatcher<CommandSourceStack> dispatcher, CommandBuildContext context, Commands.CommandSelection selection) {
         dispatcher.register(Commands.literal("워프")
             .requires(source -> source.hasPermission(2))
             .then(Commands.literal("설정")
-                .then(Commands.argument("id", StringArgumentType.string())
+                .then(Commands.argument("id", StringArgumentType.string()).suggests(SUGGEST_TELEPORT_ID)
                     .then(Commands.argument("displayName", StringArgumentType.greedyString())
                         .executes(TeleportCommand::setTeleportEntry)
                     )
                 )
             )
             .then(Commands.literal("제거")
-                .then(Commands.argument("id", StringArgumentType.string())
+                .then(Commands.argument("id", StringArgumentType.string()).suggests(SUGGEST_TELEPORT_ID)
                     .executes(TeleportCommand::removeTeleportEntry)
                 )
             )

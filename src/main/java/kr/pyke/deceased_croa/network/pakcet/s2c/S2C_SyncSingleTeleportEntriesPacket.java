@@ -35,7 +35,7 @@ public class S2C_SyncSingleTeleportEntriesPacket {
             TeleportData.TeleportEntry entry = TeleportData.TeleportEntry.fromNbt(entryTag);
             client.execute(() -> {
                 ClientCache.setTeleportEntry(id, entry);
-                ClientHelper.rebuildCreativeModeTab(client, CREATIVE_MODE_TABS.RANDOM_BOX);
+                ClientHelper.rebuildCreativeModeTab(client, CREATIVE_MODE_TABS.TELEPORT_RUNE);
             });
         });
     }

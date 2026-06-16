@@ -32,7 +32,7 @@ public class S2C_SyncBulkTeleportEntriesPacket {
             Map<String, TeleportData.TeleportEntry> entries = buf.readMap(HashMap::new, FriendlyByteBuf::readUtf, b -> TeleportData.TeleportEntry.fromNbt(b.readNbt()));
             client.execute(() -> {
                 ClientCache.setTeleportEntries(entries);
-                ClientHelper.rebuildCreativeModeTab(client, CREATIVE_MODE_TABS.RANDOM_BOX);
+                ClientHelper.rebuildCreativeModeTab(client, CREATIVE_MODE_TABS.TELEPORT_RUNE);
             });
         });
     }

@@ -31,13 +31,17 @@ public class TeleportRune extends Chargeable {
         ItemStack itemStack = player.getItemInHand(hand);
 
         CompoundTag tag = itemStack.getTag();
-        if (tag == null || !tag.contains("teleport_id")) { return InteractionResultHolder.fail(itemStack); }
+        if (tag == null || !tag.contains(TELEPORT_ID_KEY)) { return InteractionResultHolder.fail(itemStack); }
 
-        String id = tag.getString("teleport_id");
+        String id = tag.getString(TELEPORT_ID_KEY);
         if (id.isEmpty()) { return InteractionResultHolder.fail(itemStack); }
 
-        TeleportData.TeleportEntry entry = ClientCache.getTeleportEntries().get(id);
-        if (entry == null) { return InteractionResultHolder.fail(itemStack); }
+        if (level.isClientSide()) {
+            if (ClientCache.getTeleportEntries().get(id) == null) { return InteractionResultHolder.fail(itemStack); }
+        }
+        else if (player instanceof ServerPlayer serverPlayer) {
+            if (TeleportData.getServerState(serverPlayer.server).get(id) == null) { return InteractionResultHolder.fail(itemStack); }
+        }
 
         player.startUsingItem(hand);
         return InteractionResultHolder.consume(itemStack);
@@ -73,7 +77,7 @@ public class TeleportRune extends Chargeable {
         String teleportID = getTeleportID(stack);
         if (teleportID != null) {
             TeleportData.TeleportEntry entry = ClientCache.getTeleportEntries().get(teleportID);
-            if (entry != null) { return Component.literal(entry.displayName()); }
+            if (entry != null) { return Component.literal(entry.displayName() + " 이동의 룬"); }
         }
 
         return super.getName(stack);
