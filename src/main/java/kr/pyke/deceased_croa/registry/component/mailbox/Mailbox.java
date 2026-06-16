@@ -10,6 +10,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,6 +28,8 @@ public class Mailbox implements IMailbox {
 
     @Override
     public void addMail(MailboxData mail, boolean viewMessage) {
+        if (mail.itemStack() == ItemStack.EMPTY || mail.itemStack().is(Items.AIR)) { return; }
+
         mailboxData.add(mail);
         if (viewMessage) { PykeLib.sendSystemMessage((ServerPlayer) player, COLOR.YELLOW.getColor(), "새 우편이 도착했습니다!"); }
         this.player.playSound(SoundEvents.EXPERIENCE_ORB_PICKUP, 1.f, 1.f);

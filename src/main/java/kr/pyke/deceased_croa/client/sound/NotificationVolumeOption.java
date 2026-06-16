@@ -1,6 +1,9 @@
 package kr.pyke.deceased_croa.client.sound;
 
+import kr.pyke.deceased_croa.mixin.client.SoundManagerAccessor;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.OptionInstance;
+import net.minecraft.client.sounds.SoundEngine;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 
@@ -14,7 +17,14 @@ public class NotificationVolumeOption {
             (component, value) -> value == 0d ? genericValueLabel(component, CommonComponents.OPTION_OFF) : percentValueLabel(component, value),
             OptionInstance.UnitDouble.INSTANCE,
             (double) NotificationVolume.get(),
-            value -> NotificationVolume.set(value.floatValue())
+            value -> {
+                NotificationVolume.set(value.floatValue());
+
+                SoundEngine soundEngine = ((SoundManagerAccessor) Minecraft.getInstance().getSoundManager()).getSoundEngine();
+                if (soundEngine instanceof NotificationSoundRefresher refresher) {
+                    refresher.deceased_croa$refreshNotificationVolume();
+                }
+            }
         );
     }
 

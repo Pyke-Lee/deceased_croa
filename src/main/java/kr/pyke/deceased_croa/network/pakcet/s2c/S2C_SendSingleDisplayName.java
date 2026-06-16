@@ -14,7 +14,7 @@ import net.minecraft.server.level.ServerPlayer;
 import java.util.UUID;
 
 public class S2C_SendSingleDisplayName {
-    public static final ResourceLocation ID = new ResourceLocation(DeceasedCroa.MOD_ID, "c2s_displayname_single");
+    public static final ResourceLocation ID = new ResourceLocation(DeceasedCroa.MOD_ID, "s2c_displayname_single");
 
     public static void send(ServerPlayer player, UUID uuid, String displayName) {
         FriendlyByteBuf buf = new FriendlyByteBuf(Unpooled.buffer());

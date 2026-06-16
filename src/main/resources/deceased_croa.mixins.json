@@ -10,8 +10,10 @@
     ],
     "client": [
         "client.EntityArgumentMixin",
+        "client.GuiMixin",
         "client.PlayerRendererMixin",
         "client.SoundEngineMixin",
+        "client.SoundManagerAccessor",
         "client.SoundOptionsScreenMixin"
     ],
     "injectors": {

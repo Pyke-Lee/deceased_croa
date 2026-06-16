@@ -18,51 +18,104 @@ import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.levelgen.Heightmap;
 
+import java.util.ArrayDeque;
+import java.util.Deque;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class HordeManager {
-    public static void spawnHorde(ServerLevel level, Player player, HORDE_TYPE hordeType) {
-        HordeConfig config = ConfigLoader.getHordeConfig();
+    private static final Map<UUID, Deque<ActiveHorde>> HORDE_QUEUES = new ConcurrentHashMap<>();
 
-        int totalWeight;
-        if (hordeType == HORDE_TYPE.NORMAL) { totalWeight = config.normal_hordeMobs.stream().mapToInt(mob -> mob.weight).sum(); }
-        else { totalWeight = config.special_hordeMobs.stream().mapToInt(mob -> mob.weight).sum(); }
-        if (totalWeight <= 0) { return; }
+    private static class ActiveHorde {
+        final ServerLevel level;
+        final Player player;
+        final List<HordeConfig.MobEntry> entries;
+        final int interval;
+        final int glowDuration;
+        final int spawnRadius;
+        int index = 0;
+        int ticksUntilNext = 0;
 
-        RandomSource random = level.getRandom();
-
-        for (int attempt = 0; attempt < config.spawnAttempts; ++attempt) {
-            HordeConfig.MobEntry entry;
-            if (hordeType == HORDE_TYPE.NORMAL) { entry = pickWeighted(config.normal_hordeMobs, random.nextInt(totalWeight)); }
-            else { entry = pickWeighted(config.special_hordeMobs, random.nextInt(totalWeight)); }
-
-            EntityType<?> type = resolveType(entry.entity);
-            if (type == null) { continue; }
-
-            BlockPos pos = findSpawnPos(level, player.blockPosition(), config.spawnRadius, random);
-            if (pos == null) { continue; }
-
-            int count = entry.min_spawns + (entry.max_spawns > entry.min_spawns ? random.nextInt(entry.max_spawns - entry.min_spawns + 1) : 0);
-            for (int i = 0; i < count; ++i) {
-                Entity entity = type.spawn(level, pos, MobSpawnType.SPAWNER);
-                if (entity instanceof Monster monster) { monster.setTarget(player); }
-                if (entity instanceof LivingEntity livingEntity) {
-                    livingEntity.addEffect(new MobEffectInstance(MobEffects.GLOWING, config.glowDuration, 0, false, false, false));
-                }
-                else if (entity != null) { entity.discard(); }
-            }
+        ActiveHorde(ServerLevel level, Player player, List<HordeConfig.MobEntry> entries, int interval, int glowDuration, int spawnRadius) {
+            this.level = level;
+            this.player = player;
+            this.entries = entries;
+            this.interval = interval;
+            this.glowDuration = glowDuration;
+            this.spawnRadius = spawnRadius;
         }
     }
 
-    private static HordeConfig.MobEntry pickWeighted(List<HordeConfig.MobEntry> mobs, int roll) {
-        int cursor = 0;
-        for (var mob : mobs) {
-            cursor += mob.weight;
-            if (roll < cursor) { return mob; }
-        }
+    public static void startHorde(ServerLevel level, Player player, HORDE_TYPE hordeType) {
+        HordeConfig config = ConfigLoader.getHordeConfig();
 
-        return mobs.get(mobs.size() - 1);
+        List<HordeConfig.MobEntry> entries;
+        int interval;
+        if (hordeType == HORDE_TYPE.NORMAL) {
+            entries = config.normal_hordeMobs;
+            interval = config.normal_spawn_interval;
+        }
+        else {
+            entries = config.special_hordeMobs;
+            interval = config.special_spawn_interval;
+        }
+        if (entries.isEmpty()) { return; }
+
+        ActiveHorde horde = new ActiveHorde(level, player, entries, interval, config.glowDuration, config.spawnRadius);
+        horde.ticksUntilNext = interval;
+        Deque<ActiveHorde> queue = HORDE_QUEUES.computeIfAbsent(player.getUUID(), key -> new ArrayDeque<>());
+        queue.addLast(horde);
+    }
+
+    public static void tick() {
+        Iterator<Deque<ActiveHorde>> iterator = HORDE_QUEUES.values().iterator();
+        while (iterator.hasNext()) {
+            Deque<ActiveHorde> queue = iterator.next();
+
+            ActiveHorde horde = queue.peekFirst();
+            if (horde == null) {
+                iterator.remove();
+                continue;
+            }
+
+            if (horde.ticksUntilNext > 0) {
+                --horde.ticksUntilNext;
+                continue;
+            }
+
+            spawnEntry(horde, horde.entries.get(horde.index));
+            ++horde.index;
+
+            if (horde.index >= horde.entries.size()) {
+                queue.removeFirst();
+                if (queue.isEmpty()) { iterator.remove(); }
+            }
+            else { horde.ticksUntilNext = horde.interval; }
+        }
+    }
+
+    private static void spawnEntry(ActiveHorde horde, HordeConfig.MobEntry entry) {
+        ServerLevel level = horde.level;
+        Player player = horde.player;
+        RandomSource random = level.getRandom();
+
+        EntityType<?> type = resolveType(entry.entity);
+        if (type == null) { return; }
+
+        int count = entry.min_spawns + (entry.max_spawns > entry.min_spawns ? random.nextInt(entry.max_spawns - entry.min_spawns + 1) : 0);
+        for (int i = 0; i < count; ++i) {
+            BlockPos pos = findSpawnPos(level, player.blockPosition(), horde.spawnRadius, random);
+            if (pos == null) { continue; }
+
+            Entity entity = type.spawn(level, pos, MobSpawnType.SPAWNER);
+            if (entity instanceof Monster monster) { monster.setTarget(player); }
+            if (entity instanceof LivingEntity livingEntity) { livingEntity.addEffect(new MobEffectInstance(MobEffects.GLOWING, horde.glowDuration, 0, false, false, false)); }
+            else if (entity != null) { entity.discard(); }
+        }
     }
 
     private static EntityType<?> resolveType(String id) {
@@ -79,15 +132,11 @@ public class HordeManager {
             int dz = rand.nextInt(radius * 2 + 1) - radius;
             int x = center.getX() + dx;
             int z = center.getZ() + dz;
-
             if (dx * dx + dz * dz < 4) { continue; }
 
             int y = level.getHeight(Heightmap.Types.MOTION_BLOCKING, x, z);
             BlockPos pos = new BlockPos(x, y, z);
-
-            if (level.getBlockState(pos).isAir() && level.getBlockState(pos.above()).isAir() && !level.getBlockState(pos.below()).isAir()) {
-                return pos;
-            }
+            if (level.getBlockState(pos).isAir() && level.getBlockState(pos.above()).isAir() && !level.getBlockState(pos.below()).isAir()) { return pos; }
         }
 
         return null;

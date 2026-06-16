@@ -68,11 +68,11 @@ public class DonationEventHandler {
 
             // 4.44만원 (444개)
             if (44400 == krwAmount) {
-                HordeManager.spawnHorde(player.serverLevel(), player, HORDE_TYPE.NORMAL);
+                HordeManager.startHorde(player.serverLevel(), player, HORDE_TYPE.NORMAL);
                 sendServerMessage(player, COLOR.RED.getColor(), String.format("§a%s§r님이 §b%s§r님에게 §e%s§r로 §c[ 일반 호드 ]§r 이벤트를 후원합니다.", sender, name, notification));
                 sendTitle(player, "§c[!] 경고 [!]", "일반 호드 이벤트 발생!", 20, 60, 20);
                 S2C_PlaySoundPacket.send(player, ModSounds.NORMAL_HORDES, 1.f, 1.f);
-                player.addEffect(new MobEffectInstance(MobEffects.DARKNESS, 20 * 10, 0, false, true, true));
+                player.addEffect(new MobEffectInstance(MobEffects.DARKNESS, 20 * 5, 0, false, true, true));
             }
 
             // 10만원 (1000개)
@@ -86,11 +86,11 @@ public class DonationEventHandler {
 
             // 20만원 (2000개)
             if (200000 == krwAmount) {
-                HordeManager.spawnHorde(player.serverLevel(), player, HORDE_TYPE.SPECIAL);
+                HordeManager.startHorde(player.serverLevel(), player, HORDE_TYPE.SPECIAL);
                 broadcastMessage(player, COLOR.RED.getColor(), String.format("§a%s§r님이 §b%s§r님에게 §e%s§r로 §c[ 특수 호드 ]§r 이벤트를 후원합니다.", sender, name, notification));
                 sendTitle(player, "§c[!] 경고 [!]", "특수 호드 이벤트 발생!", 20, 60, 20);
                 S2C_PlaySoundPacket.send(player, SoundEvents.WITHER_DEATH, 1.f, 1.f);
-                player.addEffect(new MobEffectInstance(MobEffects.DARKNESS, 20 * 10, 0, false, true, true));
+                player.addEffect(new MobEffectInstance(MobEffects.DARKNESS, 20 * 5, 0, false, true, true));
             }
 
             // 30만원 (3000개)
@@ -155,7 +155,7 @@ public class DonationEventHandler {
         return itemStack;
     }
 
-    private static void sendTitle(ServerPlayer player, String title, String sub, int fadeIn, int stay, int fadeOut) {
+    public static void sendTitle(ServerPlayer player, String title, String sub, int fadeIn, int stay, int fadeOut) {
         player.connection.send(new ClientboundSetTitlesAnimationPacket(fadeIn, stay, fadeOut));
         player.connection.send(new ClientboundSetTitleTextPacket(Component.nullToEmpty(title)));
         if (sub != null) { player.connection.send(new ClientboundSetSubtitleTextPacket(Component.nullToEmpty(sub))); }

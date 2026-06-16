@@ -23,5 +23,13 @@ public class ServerLivingEntityEventHandler {
                 info.resetMonsterKillCount();
             }
         });
+
+        ServerLivingEntityEvents.ALLOW_DEATH.register(((entity, damageSource, damageAmount) -> {
+            if (entity instanceof Player player) {
+                ModComponents.DECEASED_INFO.get(player).setReturnTeleportEntry();
+            }
+
+            return true;
+        }));
     }
 }

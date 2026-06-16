@@ -21,15 +21,19 @@ import java.util.Collection;
 public class MailboxCommand {
     public static void register(CommandDispatcher<CommandSourceStack> dispatcher, CommandBuildContext context, Commands.CommandSelection selection) {
         dispatcher.register(Commands.literal("우편함").executes(MailboxCommand::openMailbox));
-        dispatcher.register(Commands.literal("우편보내기")
+        dispatcher.register(Commands.literal("mail")
             .requires(source -> source.hasPermission(2))
-            .then(Commands.argument("target", EntityArgument.players())
-                .executes(MailboxCommand::sendMailbox)
+            .then(Commands.literal("send")
+                .then(Commands.argument("target", EntityArgument.players())
+                    .executes(MailboxCommand::sendMailbox)
+                )
             )
-        );
-        dispatcher.register(Commands.literal("우편테스트")
-            .requires(source -> source.hasPermission(2))
-            .executes(MailboxCommand::debug)
+            .then(Commands.literal("clear")
+                .then(Commands.argument("target", EntityArgument.players())
+                    .executes(MailboxCommand::clearMailbox)
+                )
+            )
+            .then(Commands.literal("debug").executes(MailboxCommand::debug))
         );
     }
 
@@ -57,12 +61,29 @@ public class MailboxCommand {
         Collection<ServerPlayer> players = EntityArgument.getPlayers(context, "target");
 
         ItemStack heldItem = player.getMainHandItem();
+        if (heldItem.isEmpty()) {
+            PykeLib.sendSystemMessage(player, COLOR.RED.getColor(), "메일로 보낼 아이템이 없습니다.");
+            return 0;
+        }
 
         for (ServerPlayer target : players) {
             MailboxData mailboxData = MailboxData.create(heldItem.copy());
             ModComponents.MAILBOX.get(target).addMail(mailboxData, true);
         }
         PykeLib.sendSystemMessage(player, COLOR.LIME.getColor(), "메일 전송 완료!");
+
+        return 1;
+    }
+
+    public static int clearMailbox(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
+        ServerPlayer player = context.getSource().getPlayerOrException();
+        Collection<ServerPlayer> players = EntityArgument.getPlayers(context, "target");
+
+        for (ServerPlayer target : players) {
+            ModComponents.MAILBOX.get(target).clearAll();
+            PykeLib.sendSystemMessage(target, COLOR.RED.getColor(), "관리자가 당신의 메일함을 초기화하였습니다.");
+        }
+        PykeLib.sendSystemMessage(player, COLOR.LIME.getColor(), String.format("§e%s§r명의 메일함을 초기화하였습니다.", players.size()));
 
         return 1;
     }

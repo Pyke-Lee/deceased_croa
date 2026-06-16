@@ -1,5 +1,6 @@
 package kr.pyke.deceased_croa.client;
 
+import kr.pyke.deceased_croa.client.gui.hud.ChargeGaugeHud;
 import kr.pyke.deceased_croa.client.gui.hud.DeceasedHud;
 import kr.pyke.deceased_croa.client.gui.hud.RankingOverlay;
 import kr.pyke.deceased_croa.client.gui.hud.RankingSidebarOverlay;
@@ -21,6 +22,7 @@ public class DeceasedCroaClient implements ClientModInitializer {
         HudRenderCallback.EVENT.register(new DeceasedHud());
         HudRenderCallback.EVENT.register(new RankingSidebarOverlay());
         HudRenderCallback.EVENT.register(new RankingOverlay());
+        HudRenderCallback.EVENT.register(new ChargeGaugeHud());
 
         MenuScreens.register(ModMenus.MAILBOX, MailboxScreen::new);
     }

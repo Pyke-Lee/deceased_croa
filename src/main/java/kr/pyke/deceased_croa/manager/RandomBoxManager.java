@@ -5,6 +5,7 @@ import kr.pyke.deceased_croa.DeceasedCroa;
 import kr.pyke.deceased_croa.data.MailboxData;
 import kr.pyke.deceased_croa.data.RandomBoxDefinition;
 import kr.pyke.deceased_croa.data.RandomBoxReward;
+import kr.pyke.deceased_croa.network.pakcet.s2c.S2C_PlayItemActivationPacket;
 import kr.pyke.deceased_croa.network.pakcet.s2c.S2C_PlaySoundPacket;
 import kr.pyke.deceased_croa.registry.component.ModComponents;
 import kr.pyke.deceased_croa.registry.sound.ModSounds;
@@ -12,10 +13,12 @@ import kr.pyke.deceased_croa.type.MESSAGE_TYPE;
 import kr.pyke.util.constants.COLOR;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.ChatFormatting;
+import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.TagParser;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
@@ -115,9 +118,9 @@ public class RandomBoxManager {
         root.addProperty("custom_model_data", 0);
         root.addProperty("display_name", displayName);
         root.addProperty("mailbox", true);
-        root.addProperty("open_sound", "minecraft:block.amethyst_block.chime");
+        root.addProperty("open_sound", "minecraft:item.armor.equip_generic");
         root.addProperty("open_message_type", "personal");
-        root.addProperty("open_message", "§b%player%§r님이 상자에서 §c[ %item% ]§r(을)를 §e%count%§r개 획득하셨습니다!");
+        root.addProperty("open_message", "§b%player%§r님이 상자에서 §a[ %item% ]§r(을)를 §e%count%§r개 획득하셨습니다!");
         root.add("rewards", rewards);
 
         try {
@@ -242,6 +245,7 @@ public class RandomBoxManager {
         else { giveToInventory(player, stack); }
 
         playSound(player, box, reward);
+        playItemActivation(player, box, reward, stack);
         sendMessage(player, box, reward, stack);
     }
 
@@ -278,10 +282,10 @@ public class RandomBoxManager {
         String template = reward.resolveMessage(box);
         if (template == null || template.isBlank()) { return; }
 
-        String itemName = stack.getDisplayName().getString();
+        String itemName = stack.getHoverName().getString();
         String message = template
             .replace("%player%", player.getDisplayName().getString())
-            .replace("%item%", itemName.substring(1, itemName.length() - 1))
+            .replace("%item%", itemName)
             .replace("%count%", String.valueOf(stack.getCount()));
 
         MESSAGE_TYPE messageType = reward.resolveMessageType(box);
@@ -291,5 +295,19 @@ public class RandomBoxManager {
     private static String stripFormatting(String value) {
         String stripped = ChatFormatting.stripFormatting(value);
         return stripped == null ? value : stripped;
+    }
+
+    private static void playItemActivation(ServerPlayer player, RandomBoxDefinition box, RandomBoxReward reward, ItemStack stack) {
+        MESSAGE_TYPE messageType = reward.resolveMessageType(box);
+        if (messageType == MESSAGE_TYPE.PERSONAL) { return; }
+
+        S2C_PlayItemActivationPacket.send(player, stack.copy());
+        spawnTotemParticles(player);
+    }
+
+    private static void spawnTotemParticles(ServerPlayer player) {
+        if (!(player.level() instanceof ServerLevel level)) { return; }
+
+        level.sendParticles(player, ParticleTypes.TOTEM_OF_UNDYING, false, player.getX(), player.getY() + 1.f, player.getZ(), 30, 0.5f, 0.5f, 0.5f, 0.3f);
     }
 }

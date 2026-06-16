@@ -1,6 +1,7 @@
 package kr.pyke.deceased_croa.registry.tab;
 
 import kr.pyke.deceased_croa.DeceasedCroa;
+import kr.pyke.deceased_croa.client.cache.ClientCache;
 import kr.pyke.deceased_croa.data.RandomBoxDefinition;
 import kr.pyke.deceased_croa.manager.RandomBoxManager;
 import kr.pyke.deceased_croa.registry.item.ModItems;
@@ -32,10 +33,28 @@ public class ModCreativeTabs {
         BuiltInRegistries.CREATIVE_MODE_TAB,
         new ResourceLocation(DeceasedCroa.MOD_ID, "general"),
         FabricItemGroup.builder()
-            .title(Component.literal("Deceased Croa"))
+            .title(Component.literal("크로아"))
             .icon(() -> new ItemStack(ModItems.CROA_COIN))
             .displayItems((parameters, output) -> {
                 output.accept(ModItems.CROA_COIN);
+            })
+            .build()
+    );
+
+    public static final CreativeModeTab TELEPORT_RUNE = Registry.register(
+        BuiltInRegistries.CREATIVE_MODE_TAB,
+        new ResourceLocation(DeceasedCroa.MOD_ID, "teleport_rune"),
+        FabricItemGroup.builder()
+            .title(Component.literal("이동의 룬"))
+            .icon(() -> new ItemStack(ModItems.TELEPORT_RUNE))
+            .displayItems((parameters, output) -> {
+                for (String id : ClientCache.getTeleportEntries().keySet()) {
+                    ItemStack stack = new ItemStack(ModItems.TELEPORT_RUNE);
+                    stack.getOrCreateTag().putString("teleport_id", id);
+
+                    output.accept(stack);
+                }
+                output.accept(ModItems.RETURN_RUNE);
             })
             .build()
     );

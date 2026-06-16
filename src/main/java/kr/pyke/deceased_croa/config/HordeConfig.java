@@ -12,8 +12,11 @@ public class HordeConfig {
     @SerializedName("special_horde_mobs")
     public List<MobEntry> special_hordeMobs = new ArrayList<>();
 
-    @SerializedName("spawn_attempts")
-    public int spawnAttempts = 8;
+    @SerializedName("normal_spawn_interval")
+    public int normal_spawn_interval = 10;
+
+    @SerializedName("special_spawn_interval")
+    public int special_spawn_interval = 10;
 
     @SerializedName("spawn_radius")
     public int spawnRadius = 16;
@@ -23,17 +26,15 @@ public class HordeConfig {
 
     public static class MobEntry {
         public String entity;
-        public int weight;
         public int min_spawns;
         public int max_spawns;
 
-        public MobEntry(String id, int weight) {
-            this(id, weight, 1, 1);
+        public MobEntry(String id) {
+            this(id, 1, 1);
         }
 
-        public MobEntry(String entity, int weight, int min_spawns, int max_spawns) {
+        public MobEntry(String entity, int min_spawns, int max_spawns) {
             this.entity = entity;
-            this.weight = weight;
             this.min_spawns = min_spawns;
             this.max_spawns = max_spawns;
         }

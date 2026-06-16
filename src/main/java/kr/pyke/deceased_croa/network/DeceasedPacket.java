@@ -21,5 +21,9 @@ public class DeceasedPacket {
         S2C_SendSingleDisplayName.register();
         S2C_SendBulkDisplayName.register();
         S2C_PlaySoundPacket.register();
+        S2C_PlayItemActivationPacket.register();
+        S2C_SyncSingleTeleportEntriesPacket.register();
+        S2C_SyncBulkTeleportEntriesPacket.register();
+        S2C_RemoveTeleportEntryPacket.register();
     }
 }

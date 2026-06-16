@@ -4,8 +4,9 @@ import kr.pyke.deceased_croa.DeceasedCroa;
 import kr.pyke.deceased_croa.data.RandomBoxDefinition;
 import kr.pyke.deceased_croa.data.RandomBoxReward;
 import kr.pyke.deceased_croa.manager.RandomBoxManager;
-import kr.pyke.deceased_croa.registry.tab.ModCreativeTabs;
+import kr.pyke.deceased_croa.type.CREATIVE_MODE_TABS;
 import kr.pyke.deceased_croa.type.MESSAGE_TYPE;
+import kr.pyke.deceased_croa.util.ClientHelper;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
@@ -13,7 +14,6 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.item.CreativeModeTab;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,12 +26,7 @@ public class S2C_SyncRandomBoxPacket {
             List<RandomBoxDefinition> definitions = readDefinitions(buf);
             client.execute(() -> {
                 RandomBoxManager.replaceAll(definitions);
-                if (client.getConnection() != null && client.player != null) {
-                    boolean hasPermissions = client.options.operatorItemsTab().get() && client.player.canUseGameMasterBlocks();
-                    CreativeModeTab.ItemDisplayParameters parameters = new CreativeModeTab.ItemDisplayParameters(client.getConnection().enabledFeatures(), hasPermissions, client.getConnection().registryAccess());
-                    ModCreativeTabs.RANDOM_BOX.buildContents(parameters);
-                    ModCreativeTabs.RANDOM_BOX.rebuildSearchTree();
-                }
+                ClientHelper.rebuildCreativeModeTab(client, CREATIVE_MODE_TABS.RANDOM_BOX);
             });
         });
     }

@@ -6,29 +6,29 @@ import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.suggestion.SuggestionProvider;
 import kr.pyke.PykeLib;
+import kr.pyke.deceased_croa.data.RandomBoxDefinition;
 import kr.pyke.deceased_croa.manager.RandomBoxManager;
 import kr.pyke.deceased_croa.network.pakcet.s2c.S2C_SyncRandomBoxPacket;
+import kr.pyke.deceased_croa.registry.item.randombox.RandomBoxItem;
 import kr.pyke.util.constants.COLOR;
 import net.minecraft.commands.CommandBuildContext;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.commands.SharedSuggestionProvider;
+import net.minecraft.commands.arguments.EntityArgument;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.CompoundContainer;
 import net.minecraft.world.Container;
-import net.minecraft.world.MenuProvider;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.ChestBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.block.state.properties.ChestType;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 public class RandomBoxCommand {
@@ -52,7 +52,35 @@ public class RandomBoxCommand {
                     .executes(RandomBoxCommand::extractRandomBox)
                 )
             )
+            .then(Commands.literal("give")
+                .then(Commands.argument("box_id", StringArgumentType.word()).suggests(SUGGEST_BOX_ID)
+                    .then(Commands.argument("targets", EntityArgument.players())
+                        .executes(RandomBoxCommand::giveRandomBox)
+                    )
+                )
+            )
         );
+    }
+
+    private static int giveRandomBox(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
+        Collection<ServerPlayer> players = EntityArgument.getPlayers(context, "targets");
+        ServerPlayer player = context.getSource().getPlayerOrException();
+        String boxID = StringArgumentType.getString(context, "box_id");
+
+        RandomBoxDefinition definition = RandomBoxManager.get(boxID);
+        ItemStack itemStack = RandomBoxItem.createStack(definition);
+
+        for (ServerPlayer target : players) {
+            ItemStack copyItem = itemStack.copy();
+            if (target.addItem(copyItem)) {
+                target.drop(copyItem, true);
+            }
+
+            PykeLib.sendSystemMessage(target, COLOR.LIME.getColor(), String.format("관리자에 의해 %s(을)를 지급받으셨습니다.", definition.displayName()));
+        }
+        PykeLib.sendSystemMessage(player, COLOR.LIME.getColor(), String.format("§e%s§r명에게 %s(을)를 지급하였습니다.", players.size(), definition.displayName()));
+
+        return 1;
     }
 
     private static int reload(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
