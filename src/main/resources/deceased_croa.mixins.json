@@ -1,22 +1,23 @@
 {
-	"required": true,
-	"package": "kr.pyke.deceased_croa.mixin",
-	"compatibilityLevel": "JAVA_17",
-	"mixins": [
-		"server.EntitySelectorParserMixin",
-		"server.PlayerMixin",
-		"server.ServerGamePacketListenerImplMixin",
-		"server.ServerPlayerMixin",
-		"server.SoundSourceMixin"
-	],
-	"client": [
-		"client.EntityArgumentMixin",
-		"client.PlayerRendererMixin"
-	],
-	"injectors": {
-		"defaultRequire": 1
-	},
-	"overwrites": {
-		"requireAnnotations": true
+    "required": true,
+    "package": "kr.pyke.deceased_croa.mixin",
+    "compatibilityLevel": "JAVA_17",
+    "mixins": [
+        "server.EntitySelectorParserMixin",
+        "server.PlayerMixin",
+        "server.ServerGamePacketListenerImplMixin",
+        "server.ServerPlayerMixin"
+    ],
+    "client": [
+        "client.EntityArgumentMixin",
+        "client.PlayerRendererMixin",
+        "client.SoundEngineMixin",
+        "client.SoundOptionsScreenMixin"
+    ],
+    "injectors": {
+        "defaultRequire": 1
+    },
+    "overwrites": {
+        "requireAnnotations": true
 	}
 }

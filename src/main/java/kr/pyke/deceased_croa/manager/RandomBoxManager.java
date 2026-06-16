@@ -18,6 +18,7 @@ import net.minecraft.nbt.TagParser;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.Container;
 import net.minecraft.world.item.ItemStack;
@@ -245,11 +246,7 @@ public class RandomBoxManager {
     }
 
     private static void sendToMailbox(ServerPlayer player, RandomBoxDefinition box, ItemStack stack) {
-        String title = stripFormatting(box.displayName()) + " 보상";
-        List<ItemStack> items = new ArrayList<>();
-        items.add(stack.copy());
-
-        MailboxData mail = MailboxData.create(title, "시스템", "", items);
+        MailboxData mail = MailboxData.create(stack.copy());
         ModComponents.MAILBOX.get(player).addMail(mail, false);
     }
 
@@ -273,7 +270,7 @@ public class RandomBoxManager {
 
         MESSAGE_TYPE messageType = reward.resolveMessageType(box);
         for (ServerPlayer target : messageType.soundTargets(player)) {
-            S2C_PlaySoundPacket.send(target, soundEvent, ModSounds.NOTIFICATION, 1.f, 1.f);
+            S2C_PlaySoundPacket.send(target, soundEvent, 1.f, 1.f);
         }
     }
 

@@ -8,7 +8,6 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
-import net.minecraft.sounds.SoundSource;
 
 public class S2C_PlaySoundPacket {
     public static final ResourceLocation ID = new ResourceLocation(DeceasedCroa.MOD_ID, "play_sound");
@@ -17,11 +16,10 @@ public class S2C_PlaySoundPacket {
         ClientHelper.registerSoundPacket();
     }
 
-    public static void send(ServerPlayer player, SoundEvent sound, SoundSource source, float volume, float pitch) {
+    public static void send(ServerPlayer player, SoundEvent sound, float volume, float pitch) {
         FriendlyByteBuf buf = PacketByteBufs.create();
 
         buf.writeResourceLocation(sound.getLocation());
-        buf.writeEnum(source);
         buf.writeFloat(volume);
         buf.writeFloat(pitch);
 

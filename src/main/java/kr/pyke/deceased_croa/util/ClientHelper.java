@@ -3,6 +3,7 @@ package kr.pyke.deceased_croa.util;
 import com.mojang.blaze3d.platform.InputConstants;
 import kr.pyke.deceased_croa.DeceasedCroa;
 import kr.pyke.deceased_croa.client.key.ModKeyBinding;
+import kr.pyke.deceased_croa.client.sound.NotificationSoundInstance;
 import kr.pyke.deceased_croa.network.pakcet.s2c.S2C_PlaySoundPacket;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
@@ -46,7 +47,6 @@ public class ClientHelper {
     public static void registerSoundPacket() {
         ClientPlayNetworking.registerGlobalReceiver(S2C_PlaySoundPacket.ID, (client, handler, buf, responseSender) -> {
             ResourceLocation soundID = buf.readResourceLocation();
-            SoundSource source = buf.readEnum(SoundSource.class);
             float volume = buf.readFloat();
             float pitch = buf.readFloat();
 
@@ -54,7 +54,7 @@ public class ClientHelper {
                 SoundEvent sound = BuiltInRegistries.SOUND_EVENT.get(soundID);
                 if (sound == null) { return; }
 
-                client.getSoundManager().play(new SimpleSoundInstance(sound.getLocation(), source, volume, pitch, SoundInstance.createUnseededRandom(), false, 0, SimpleSoundInstance.Attenuation.NONE, 0.f, 0.f, 0.f, true));
+                client.getSoundManager().play(new NotificationSoundInstance(sound.getLocation(), volume, pitch));
             });
         });
     }

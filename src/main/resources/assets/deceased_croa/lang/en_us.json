@@ -25,5 +25,5 @@
     "menu.deceased_croa.mailbox.send.message_hint": "내용",
     "item.deceased_croa.coin.croa": "크로아 코인",
     "item.croa.coin.tooltip": "메인 상점에서 특별한 아이템으로 교환할 수 있습니다.",
-    "soundCategory.notification": "알림"
+    "soundCategory.deceased_croa.notification": "알림"
 }

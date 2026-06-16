@@ -5,11 +5,8 @@ import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
-import net.minecraft.sounds.SoundSource;
 
 public class ModSounds {
-    public static final SoundSource NOTIFICATION = SoundSource.valueOf("DECEASED_CROA_NOTIFICATION");
-
     public static final SoundEvent FANFARE = register("custom_sound.fanfare");
     public static final SoundEvent NORMAL_HORDES = register("custom_sound.normal_hordes");
 
