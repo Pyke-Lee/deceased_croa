@@ -27,5 +27,6 @@
     "item.croa.coin.tooltip": "메인 상점에서 특별한 아이템으로 교환할 수 있습니다.",
     "item.deceased_croa.rune.return": "귀환의 룬",
     "item.deceased_croa.rune.teleport": "알수없는 룬",
+    "item.deceased_croa.food.galic_bread": "마늘 빵",
     "soundCategory.deceased_croa.notification": "알림"
 }

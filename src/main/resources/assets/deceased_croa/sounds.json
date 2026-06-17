@@ -10,5 +10,77 @@
         "sounds": [
             "deceased_croa:normal_hordes"
         ]
+    },
+    "custom_sound.anc.server": {
+        "subtitle": "subtitles.deceased_croa.custom_sound.anc.server",
+        "sounds": [
+            "deceased_croa:anc.server"
+        ]
+    },
+    "custom_sound.anc.broadcast": {
+        "subtitle": "subtitles.deceased_croa.custom_sound.anc.broadcast",
+        "sounds": [
+            "deceased_croa:anc.broadcast"
+        ]
+    },
+    "custom_sound.box.open": {
+        "subtitle": "subtitles.deceased_croa.custom_sound.box.open",
+        "sounds": [
+            "deceased_croa:box.open"
+        ]
+    },
+    "custom_sound.box.ride": {
+        "subtitle": "subtitles.deceased_croa.custom_sound.box.ride",
+        "sounds": [
+            "deceased_croa:box.ride"
+        ]
+    },
+    "custom_sound.yar": {
+        "subtitle": "subtitles.deceased_croa.custom_sound.yar",
+        "sounds": [
+            "deceased_croa:yar"
+        ]
+    },
+    "custom_sound.kangkang": {
+        "subtitle": "subtitles.deceased_croa.custom_sound.kangkang",
+        "sounds": [
+            "deceased_croa:kangkang"
+        ]
+    },
+    "custom_sound.yeah": {
+        "subtitle": "subtitles.deceased_croa.custom_sound.yeah",
+        "sounds": [
+            "deceased_croa:yeah"
+        ]
+    },
+    "custom_sound.peep": {
+        "subtitle": "subtitles.deceased_croa.custom_sound.peep",
+        "sounds": [
+            "deceased_croa:peep"
+        ]
+    },
+    "custom_sound.kkokkio": {
+        "subtitle": "subtitles.deceased_croa.custom_sound.kkokkio",
+        "sounds": [
+            "deceased_croa:kkokkio"
+        ]
+    },
+    "custom_sound.magic": {
+        "subtitle": "subtitles.deceased_croa.custom_sound.magic",
+        "sounds": [
+            "deceased_croa:magic"
+        ]
+    },
+    "custom_sound.siren.0": {
+        "subtitle": "subtitles.deceased_croa.custom_sound.siren.0",
+        "sounds": [
+            "deceased_croa:siren.0"
+        ]
+    },
+    "custom_sound.horde_spawn": {
+        "subtitle": "subtitles.deceased_croa.custom_sound.horde_spawn",
+        "sounds": [
+            "deceased_croa:horde_spawn"
+        ]
     }
 }

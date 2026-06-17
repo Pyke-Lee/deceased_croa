@@ -1,6 +1,7 @@
 package kr.pyke.deceased_croa.manager;
 
 import com.google.gson.*;
+import kr.pyke.PykeLib;
 import kr.pyke.deceased_croa.DeceasedCroa;
 import kr.pyke.deceased_croa.data.MailboxData;
 import kr.pyke.deceased_croa.data.RandomBoxDefinition;
@@ -8,7 +9,6 @@ import kr.pyke.deceased_croa.data.RandomBoxReward;
 import kr.pyke.deceased_croa.network.pakcet.s2c.S2C_PlayItemActivationPacket;
 import kr.pyke.deceased_croa.network.pakcet.s2c.S2C_PlaySoundPacket;
 import kr.pyke.deceased_croa.registry.component.ModComponents;
-import kr.pyke.deceased_croa.registry.sound.ModSounds;
 import kr.pyke.deceased_croa.type.MESSAGE_TYPE;
 import kr.pyke.util.constants.COLOR;
 import net.fabricmc.loader.api.FabricLoader;
@@ -21,10 +21,10 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
-import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.Container;
 import net.minecraft.world.item.ItemStack;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 import java.io.Reader;
@@ -114,13 +114,7 @@ public class RandomBoxManager {
 
         if (rewards.isEmpty()) { return CreateResult.EMPTY; }
 
-        JsonObject root = new JsonObject();
-        root.addProperty("custom_model_data", 0);
-        root.addProperty("display_name", displayName);
-        root.addProperty("mailbox", true);
-        root.addProperty("open_sound", "minecraft:item.armor.equip_generic");
-        root.addProperty("open_message_type", "personal");
-        root.addProperty("open_message", "§b%player%§r님이 상자에서 §a[ %item% ]§r(을)를 §e%count%§r개 획득하셨습니다!");
+        JsonObject root = getJsonObject(displayName);
         root.add("rewards", rewards);
 
         try {
@@ -133,6 +127,21 @@ public class RandomBoxManager {
         }
 
         return CreateResult.SUCCESS;
+    }
+
+    private static @NotNull JsonObject getJsonObject(String displayName) {
+        JsonObject root = new JsonObject();
+
+        root.addProperty("custom_model_data", 0);
+        root.addProperty("display_name", displayName);
+        root.addProperty("mailbox", true);
+        root.addProperty("pack", false);
+        root.addProperty("open_sound", "deceased_croa:custom_sound.box.open");
+        root.addProperty("sound_volume", 1.f);
+        root.addProperty("open_message_type", "personal");
+        root.addProperty("open_message", "§b%player%§r님이 상자에서 §a[ %item% ]§r(을)를 §e%count%§r개 획득하셨습니다!");
+
+        return root;
     }
 
     public static ExtractResult extractToContainer(String boxID, Container container) {
@@ -179,8 +188,10 @@ public class RandomBoxManager {
         String displayName = optString(root, "display_name", boxID);
         boolean mailbox = root.has("mailbox") && root.get("mailbox").getAsBoolean();
         String openSound = optString(root, "open_sound", null);
+        float soundVolume = root.has("sound_volume") ? root.get("sound_volume").getAsFloat() : 1.f;
         MESSAGE_TYPE openMessageType = MESSAGE_TYPE.fromString(optString(root, "open_message_type", null));
         String openMessage = optString(root, "open_message", null);
+        boolean isPackage = root.has("pack") && root.get("pack").getAsBoolean();
 
         List<RandomBoxReward> rewards = new ArrayList<>();
         if (root.has("rewards")) {
@@ -198,7 +209,7 @@ public class RandomBoxManager {
             return null;
         }
 
-        return new RandomBoxDefinition(boxID, customModelData, displayName, mailbox, openSound, openMessageType, openMessage, rewards);
+        return new RandomBoxDefinition(boxID, customModelData, displayName, mailbox, isPackage, openSound, soundVolume, openMessageType, openMessage, rewards);
     }
 
     private static RandomBoxReward parseReward(String boxID, JsonObject object) {
@@ -224,10 +235,11 @@ public class RandomBoxManager {
         }
 
         String openSound = object.has("open_sound") ? object.get("open_sound").getAsString() : null;
+        float soundVolume = object.has("sound_volume") ? object.get("sound_volume").getAsFloat() : 0.f;
         MESSAGE_TYPE openMessageType = object.has("open_message_type") ? MESSAGE_TYPE.fromString(object.get("open_message_type").getAsString()) : null;
         String openMessage = object.has("open_message") ? object.get("open_message").getAsString() : null;
 
-        return new RandomBoxReward(item, count, weight, nbt, openSound, openMessageType, openMessage);
+        return new RandomBoxReward(item, count, weight, nbt, openSound, soundVolume, openMessageType, openMessage);
     }
 
     private static String optString(JsonObject object, String key, String fallback) {
@@ -237,16 +249,31 @@ public class RandomBoxManager {
     }
 
     public static void grant(ServerPlayer player, RandomBoxDefinition box) {
-        RandomBoxReward reward = box.roll(RANDOM);
-        if (reward == null) { return; }
+        if (box.pack()) {
+            List<RandomBoxReward> rewards = box.rewards();
+            if (rewards.isEmpty()) { return; }
 
-        ItemStack stack = reward.createStack();
-        if (box.mailbox()) { sendToMailbox(player, box, stack); }
-        else { giveToInventory(player, stack); }
+            for (RandomBoxReward reward : rewards) {
+                ItemStack itemStack = reward.createStack();
+                if (box.mailbox()) { sendToMailbox(player, box, itemStack); }
+                else { giveToInventory(player, itemStack); }
+            }
 
-        playSound(player, box, reward);
-        playItemActivation(player, box, reward, stack);
-        sendMessage(player, box, reward, stack);
+            playSound(player, box);
+            PykeLib.sendSystemMessage(player, COLOR.GOLD.getColor(), box.openMessage());
+        }
+        else {
+            RandomBoxReward reward = box.roll(RANDOM);
+            if (reward == null) { return; }
+
+            ItemStack stack = reward.createStack();
+            if (box.mailbox()) { sendToMailbox(player, box, stack); }
+            else { giveToInventory(player, stack); }
+
+            playSound(player, box, reward);
+            playItemActivation(player, box, reward, stack);
+            sendMessage(player, box, reward, stack);
+        }
     }
 
     private static void sendToMailbox(ServerPlayer player, RandomBoxDefinition box, ItemStack stack) {
@@ -272,10 +299,19 @@ public class RandomBoxManager {
 
         SoundEvent soundEvent = SoundEvent.createVariableRangeEvent(soundLocation);
 
-        MESSAGE_TYPE messageType = reward.resolveMessageType(box);
-        for (ServerPlayer target : messageType.soundTargets(player)) {
-            S2C_PlaySoundPacket.send(target, soundEvent, 1.f, 1.f);
-        }
+        S2C_PlaySoundPacket.send(player, soundEvent, reward.resolveSoundVolume(box), 1.f);
+    }
+
+    private static void playSound(ServerPlayer player, RandomBoxDefinition box) {
+        String soundID = box.openSound();
+        if (soundID == null || soundID.isBlank()) { return; }
+
+        ResourceLocation soundLocation = ResourceLocation.tryParse(soundID);
+        if (soundLocation == null) { return; }
+
+        SoundEvent soundEvent = SoundEvent.createVariableRangeEvent(soundLocation);
+
+        S2C_PlaySoundPacket.send(player, soundEvent, box.soundVolume(), 1.f);
     }
 
     private static void sendMessage(ServerPlayer player, RandomBoxDefinition box, RandomBoxReward reward, ItemStack stack) {
@@ -285,7 +321,7 @@ public class RandomBoxManager {
         String itemName = stack.getHoverName().getString();
         String message = template
             .replace("%player%", player.getDisplayName().getString())
-            .replace("%item%", itemName)
+            .replace("%item%", itemName.strip())
             .replace("%count%", String.valueOf(stack.getCount()));
 
         MESSAGE_TYPE messageType = reward.resolveMessageType(box);

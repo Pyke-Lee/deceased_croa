@@ -37,6 +37,7 @@ public class ModCreativeTabs {
             .icon(() -> new ItemStack(ModItems.CROA_COIN))
             .displayItems((parameters, output) -> {
                 output.accept(ModItems.CROA_COIN);
+                output.accept(ModItems.GALIC_BREAD);
             })
             .build()
     );

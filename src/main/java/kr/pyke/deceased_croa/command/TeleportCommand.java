@@ -9,12 +9,14 @@ import kr.pyke.PykeLib;
 import kr.pyke.deceased_croa.data.TeleportData;
 import kr.pyke.deceased_croa.network.pakcet.s2c.S2C_RemoveTeleportEntryPacket;
 import kr.pyke.deceased_croa.network.pakcet.s2c.S2C_SyncSingleTeleportEntriesPacket;
+import kr.pyke.deceased_croa.registry.item.ModItems;
 import kr.pyke.util.constants.COLOR;
 import net.minecraft.commands.CommandBuildContext;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.commands.SharedSuggestionProvider;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.item.ItemStack;
 
 public class TeleportCommand {
     private static final SuggestionProvider<CommandSourceStack> SUGGEST_TELEPORT_ID = (context, builder) -> SharedSuggestionProvider.suggest(TeleportData.getServerState(context.getSource().getServer()).getEntries().keySet(), builder);
@@ -37,6 +39,22 @@ public class TeleportCommand {
                 )
             )
         );
+
+        dispatcher.register(Commands.literal("상점").executes(TeleportCommand::giveShopTeleportRune));
+    }
+
+    private static int giveShopTeleportRune(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
+        ServerPlayer player = context.getSource().getPlayerOrException();
+
+        ItemStack itemStack = new ItemStack(ModItems.TELEPORT_RUNE);
+        itemStack.getOrCreateTag().putString("teleport_id", "shop");
+
+        if (player.addItem(itemStack)) {
+            player.drop(itemStack, true);
+        }
+        PykeLib.sendSystemMessage(player, COLOR.LIME.getColor(), "상점 이동의 룬을 지급 받으셨습니다.");
+
+        return 1;
     }
 
     private static int setTeleportEntry(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {

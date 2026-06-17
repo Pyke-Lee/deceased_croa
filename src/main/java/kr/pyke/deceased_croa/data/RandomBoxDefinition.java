@@ -5,7 +5,7 @@ import net.minecraft.util.RandomSource;
 
 import java.util.List;
 
-public record RandomBoxDefinition(String boxID, int customModelData, String displayName, boolean mailbox, String openSound, MESSAGE_TYPE openMessageType, String openMessage, List<RandomBoxReward> rewards) {
+public record RandomBoxDefinition(String boxID, int customModelData, String displayName, boolean mailbox, boolean pack, String openSound, float soundVolume, MESSAGE_TYPE openMessageType, String openMessage, List<RandomBoxReward> rewards) {
     public int totalWeight() {
         int total = 0;
         for (RandomBoxReward reward : this.rewards) {

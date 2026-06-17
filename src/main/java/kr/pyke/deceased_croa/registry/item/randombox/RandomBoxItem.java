@@ -4,6 +4,7 @@ import kr.pyke.deceased_croa.client.key.ModKeyBinding;
 import kr.pyke.deceased_croa.data.RandomBoxDefinition;
 import kr.pyke.deceased_croa.data.RandomBoxReward;
 import kr.pyke.deceased_croa.manager.RandomBoxManager;
+import kr.pyke.deceased_croa.registry.item.ModItems;
 import kr.pyke.deceased_croa.util.ClientHelper;
 import net.minecraft.ChatFormatting;
 import net.minecraft.nbt.CompoundTag;
@@ -30,7 +31,7 @@ public class RandomBoxItem extends Item {
     }
 
     public static ItemStack createStack(RandomBoxDefinition definition) {
-        ItemStack stack = new ItemStack(kr.pyke.deceased_croa.registry.item.ModItems.RANDOM_BOX);
+        ItemStack stack = new ItemStack(ModItems.RANDOM_BOX);
         CompoundTag tag = stack.getOrCreateTag();
         tag.putString(BOX_ID_KEY, definition.boxID());
         tag.putInt(CUSTOM_MODEL_DATA_KEY, definition.customModelData());
@@ -79,9 +80,15 @@ public class RandomBoxItem extends Item {
         for (int i = 0; i < shown; ++i) {
             RandomBoxReward reward = rewards.get(i);
             String itemName = reward.createStack().getHoverName().getString();
-            double percent = totalWeight > 0 ? (double) Math.max(0, reward.weight()) / (double) totalWeight * 100.0 : 0.0;
-            String line = String.format("%s x%d - %.1f%%", itemName, reward.count(), percent);
-            tooltip.add(Component.literal(line).withStyle(ChatFormatting.GRAY));
+            String line;
+            if (definition.pack()) {
+                line = String.format("%s x%d", itemName, reward.count());
+            }
+            else {
+                double percent = totalWeight > 0 ? (double) Math.max(0, reward.weight()) / (double) totalWeight * 100d : 0d;
+                line = String.format("%s x%d - %.1f%%", itemName, reward.count(), percent);
+            }
+            tooltip.add(Component.literal(line.strip()).withStyle(ChatFormatting.GRAY));
         }
 
         int remaining = rewards.size() - shown;

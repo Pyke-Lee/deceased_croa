@@ -2,6 +2,8 @@ package kr.pyke.deceased_croa.registry.item;
 
 import kr.pyke.deceased_croa.DeceasedCroa;
 import kr.pyke.deceased_croa.registry.item.coin.Coin;
+import kr.pyke.deceased_croa.registry.item.food.ModFoods;
+import kr.pyke.deceased_croa.registry.item.food.galic_bread.GalicBread;
 import kr.pyke.deceased_croa.registry.item.randombox.RandomBoxItem;
 import kr.pyke.deceased_croa.registry.item.rune.ReturnRune;
 import kr.pyke.deceased_croa.registry.item.rune.TeleportRune;
@@ -15,6 +17,7 @@ public class ModItems {
     public static final Item CROA_COIN = register("coin/croa", new Coin(new Item.Properties().stacksTo(64)));
     public static final Item TELEPORT_RUNE = register("rune/teleport", new TeleportRune(new Item.Properties().stacksTo(64)));
     public static final Item RETURN_RUNE = register("rune/return", new ReturnRune(new Item.Properties().stacksTo(64)));
+    public static final Item GALIC_BREAD = register("food/galic_bread", new GalicBread(new Item.Properties().stacksTo(64).food(ModFoods.GALIC_BREAD)));
 
     private ModItems() { }
 

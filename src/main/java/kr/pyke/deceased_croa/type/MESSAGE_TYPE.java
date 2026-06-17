@@ -52,7 +52,7 @@ public enum MESSAGE_TYPE {
 
     public List<ServerPlayer> soundTargets(ServerPlayer player) {
         MinecraftServer server = player.level().getServer();
-        if (this == PERSONAL || server == null) { return List.of(player); }
+        if (this != BROADCAST || server == null) { return List.of(player); }
 
         return server.getPlayerList().getPlayers();
     }

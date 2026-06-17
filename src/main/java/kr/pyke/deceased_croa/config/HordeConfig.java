@@ -12,11 +12,17 @@ public class HordeConfig {
     @SerializedName("special_horde_mobs")
     public List<MobEntry> special_hordeMobs = new ArrayList<>();
 
+    @SerializedName("server_hordes")
+    public List<MobEntry> server_hordes = new ArrayList<>();
+
     @SerializedName("normal_spawn_interval")
     public int normal_spawn_interval = 10;
 
     @SerializedName("special_spawn_interval")
     public int special_spawn_interval = 10;
+
+    @SerializedName("server_spawn_interval")
+    public int server_spawn_interval = 10;
 
     @SerializedName("spawn_radius")
     public int spawnRadius = 16;

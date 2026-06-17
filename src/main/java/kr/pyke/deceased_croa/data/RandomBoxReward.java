@@ -7,7 +7,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 
-public record RandomBoxReward(ResourceLocation item, int count, int weight, CompoundTag nbt, String openSound, MESSAGE_TYPE openMessageType, String openMessage) {
+public record RandomBoxReward(ResourceLocation item, int count, int weight, CompoundTag nbt, String openSound, float soundVolume, MESSAGE_TYPE openMessageType, String openMessage) {
     public ItemStack createStack() {
         Item resolved = BuiltInRegistries.ITEM.get(this.item);
         ItemStack stack = new ItemStack(resolved, this.count);
@@ -33,5 +33,11 @@ public record RandomBoxReward(ResourceLocation item, int count, int weight, Comp
         if (this.openMessage != null) { return this.openMessage; }
 
         return box.openMessage();
+    }
+
+    public float resolveSoundVolume(RandomBoxDefinition box) {
+        if (this.soundVolume > 0.f) { return this.soundVolume; }
+
+        return box.soundVolume();
     }
 }

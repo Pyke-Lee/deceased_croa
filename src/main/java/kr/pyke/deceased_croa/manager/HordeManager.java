@@ -59,9 +59,13 @@ public class HordeManager {
             entries = config.normal_hordeMobs;
             interval = config.normal_spawn_interval;
         }
-        else {
+        else if (hordeType == HORDE_TYPE.SPECIAL) {
             entries = config.special_hordeMobs;
             interval = config.special_spawn_interval;
+        }
+        else {
+            entries = config.server_hordes;
+            interval = config.server_spawn_interval;
         }
         if (entries.isEmpty()) { return; }
 

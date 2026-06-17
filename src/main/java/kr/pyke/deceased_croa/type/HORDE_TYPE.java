@@ -2,7 +2,8 @@ package kr.pyke.deceased_croa.type;
 
 public enum HORDE_TYPE {
     NORMAL("normal"),
-    SPECIAL("special");
+    SPECIAL("special"),
+    SERVER("server");
 
     final String id;
 

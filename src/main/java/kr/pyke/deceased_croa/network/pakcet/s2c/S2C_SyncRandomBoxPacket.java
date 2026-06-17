@@ -46,7 +46,9 @@ public class S2C_SyncRandomBoxPacket {
             buf.writeVarInt(definition.customModelData());
             buf.writeUtf(definition.displayName());
             buf.writeBoolean(definition.mailbox());
+            buf.writeBoolean(definition.pack());
             writeNullableString(buf, definition.openSound());
+            buf.writeFloat(definition.soundVolume());
             writeNullableMessageType(buf, definition.openMessageType());
             writeNullableString(buf, definition.openMessage());
 
@@ -57,6 +59,7 @@ public class S2C_SyncRandomBoxPacket {
                 buf.writeVarInt(reward.weight());
                 buf.writeNbt(reward.nbt());
                 writeNullableString(buf, reward.openSound());
+                buf.writeFloat(reward.soundVolume());
                 writeNullableMessageType(buf, reward.openMessageType());
                 writeNullableString(buf, reward.openMessage());
             }
@@ -72,7 +75,9 @@ public class S2C_SyncRandomBoxPacket {
             int customModelData = buf.readVarInt();
             String displayName = buf.readUtf();
             boolean mailbox = buf.readBoolean();
+            boolean isPackage = buf.readBoolean();
             String openSound = readNullableString(buf);
+            float soundVolume = buf.readFloat();
             MESSAGE_TYPE openMessageType = readNullableMessageType(buf);
             String openMessage = readNullableString(buf);
 
@@ -85,13 +90,14 @@ public class S2C_SyncRandomBoxPacket {
                 int weight = buf.readVarInt();
                 CompoundTag nbt = buf.readNbt();
                 String rewardSound = readNullableString(buf);
+                float rewardSoundVolume = buf.readFloat();
                 MESSAGE_TYPE rewardMessageType = readNullableMessageType(buf);
                 String rewardMessage = readNullableString(buf);
 
-                rewards.add(new RandomBoxReward(item, count, weight, nbt, rewardSound, rewardMessageType, rewardMessage));
+                rewards.add(new RandomBoxReward(item, count, weight, nbt, rewardSound, rewardSoundVolume, rewardMessageType, rewardMessage));
             }
 
-            definitions.add(new RandomBoxDefinition(boxID, customModelData, displayName, mailbox, openSound, openMessageType, openMessage, rewards));
+            definitions.add(new RandomBoxDefinition(boxID, customModelData, displayName, mailbox, isPackage, openSound, soundVolume, openMessageType, openMessage, rewards));
         }
 
         return definitions;
