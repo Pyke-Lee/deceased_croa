@@ -1,9 +1,13 @@
 package kr.pyke.deceased_croa.registry.item.rune;
 
+import kr.pyke.PykeLib;
 import kr.pyke.deceased_croa.client.cache.ClientCache;
+import kr.pyke.deceased_croa.data.MailboxData;
 import kr.pyke.deceased_croa.data.TeleportData;
 import kr.pyke.deceased_croa.registry.component.ModComponents;
+import kr.pyke.deceased_croa.registry.item.ModItems;
 import kr.pyke.deceased_croa.registry.item.chargeable.Chargeable;
+import kr.pyke.util.constants.COLOR;
 import net.minecraft.ChatFormatting;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -65,6 +69,9 @@ public class WarpRune extends Chargeable {
             if (entry.teleportTo(serverPlayer)) {
                 if (!serverPlayer.getAbilities().instabuild) {
                     itemStack.shrink(1);
+
+                    ModComponents.MAILBOX.get(serverPlayer).addMail(MailboxData.create(new ItemStack(ModItems.RED_RUNE)), false);
+                    PykeLib.sendSystemMessage(serverPlayer, COLOR.LIME.getColor(), "귀환의 룬이 메일함으로 지급되었습니다.");
                 }
             }
 

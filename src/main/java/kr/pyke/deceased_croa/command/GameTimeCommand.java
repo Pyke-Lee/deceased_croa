@@ -29,38 +29,44 @@ public class GameTimeCommand {
                 .executes(GameTimeCommand::toggleFreeze))
 
             .then(Commands.literal("reset").executes(GameTimeCommand::reset))
+
+            .then(Commands.literal("fix").executes(GameTimeCommand::fix))
         );
     }
 
     private static int setScale(CommandContext<CommandSourceStack> ctx) {
+        MinecraftServer server = ctx.getSource().getServer();
         float value = FloatArgumentType.getFloat(ctx, "value");
-        GameTimeController.setScale(value);
+        GameTimeController.getServerState(server).setScale(value);
         feedback(ctx, "게임타임 배율: " + value + "x");
         return 1;
     }
 
     private static int getScale(CommandContext<CommandSourceStack> ctx) {
-        feedback(ctx, "현재 게임타임 배율: " + GameTimeController.getScale() + "x");
+        MinecraftServer server = ctx.getSource().getServer();
+        feedback(ctx, "현재 게임타임 배율: " + GameTimeController.getServerState(server).getScale() + "x");
         return 1;
     }
 
     private static int setFreeze(CommandContext<CommandSourceStack> ctx) {
+        MinecraftServer server = ctx.getSource().getServer();
         boolean frozen = BoolArgumentType.getBool(ctx, "frozen");
-        GameTimeController.setFrozen(frozen);
+        GameTimeController.getServerState(server).setFrozen(frozen);
         feedback(ctx, "게임타임 정지: " + (frozen ? "ON" : "OFF"));
         return 1;
     }
 
     private static int toggleFreeze(CommandContext<CommandSourceStack> ctx) {
-        boolean now = !GameTimeController.isFrozen();
-        GameTimeController.setFrozen(now);
+        MinecraftServer server = ctx.getSource().getServer();
+        boolean now = !GameTimeController.getServerState(server).isFrozen();
+        GameTimeController.getServerState(server).setFrozen(now);
         feedback(ctx, "게임타임 정지: " + (now ? "ON" : "OFF"));
         return 1;
     }
 
     private static int reset(CommandContext<CommandSourceStack> ctx) {
         MinecraftServer server = ctx.getSource().getServer();
-        GameTimeController.reset();
+        GameTimeController.getServerState(server).reset();
         for (ServerLevel level : server.getAllLevels()) {
             ((ServerLevelData) level.getLevelData()).setGameTime(0L);
         }
@@ -73,5 +79,15 @@ public class GameTimeCommand {
         if (player != null) {
             PykeLib.sendSystemMessage(player, COLOR.LIME.getColor(), message);
         }
+    }
+
+    private static int fix(CommandContext<CommandSourceStack> ctx) {
+        MinecraftServer server = ctx.getSource().getServer();
+        for (ServerLevel level : server.getAllLevels()) {
+            long dayTime = level.getDayTime();
+            ((ServerLevelData) level.getLevelData()).setGameTime(dayTime);
+        }
+        feedback(ctx, "게임타임을 현재 일수/시간에 맞춰 설정했습니다.");
+        return 1;
     }
 }

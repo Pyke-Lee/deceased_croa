@@ -1,26 +1,59 @@
 package kr.pyke.deceased_croa.data;
 
-public class GameTimeController {
-    private static float scale = 1.f;
-    private static double accumulator = 0.d;
-    private static boolean frozen = false;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.level.saveddata.SavedData;
+import org.jetbrains.annotations.NotNull;
 
-    public static float getScale() { return GameTimeController.scale; }
-    public static void setScale(float scale) { GameTimeController.scale = Math.max(0.f, scale); }
+public class GameTimeController extends SavedData {
+    private static final String FILE_NAME = "game_time_controller";
 
-    public static boolean isFrozen() { return frozen; }
-    public static void setFrozen(boolean frozen) { GameTimeController.frozen = frozen; }
+    private float scale = 1.f;
+    private double accumulator = 0.d;
+    private boolean frozen = false;
 
-    public static long consumeDelta() {
-        if (GameTimeController.frozen) { return 0L; }
+    public float getScale() { return this.scale; }
+    public void setScale(float scale) { this.scale = Math.max(0.f, scale); }
 
-        GameTimeController.accumulator += GameTimeController.scale;
-        long whole = (long) GameTimeController.accumulator;
-        GameTimeController.accumulator -= whole;
+    public boolean isFrozen() { return frozen; }
+    public void setFrozen(boolean frozen) { this.frozen = frozen; }
+
+    public long consumeDelta() {
+        if (this.frozen) { return 0L; }
+
+        this.accumulator += this.scale;
+        long whole = (long) this.accumulator;
+        this.accumulator -= whole;
         return whole;
     }
 
-    public static void reset() {
-        GameTimeController.accumulator = 0.d;
+    public void reset() {
+        this.accumulator = 0.d;
+    }
+
+    public static GameTimeController load(CompoundTag tag) {
+        GameTimeController data = new GameTimeController();
+
+        data.scale = tag.getFloat("scale");
+        data.accumulator = tag.getDouble("accumulator");
+        data.frozen = tag.getBoolean("frozen");
+
+        return data;
+    }
+
+    @Override
+    public @NotNull CompoundTag save(CompoundTag compoundTag) {
+        compoundTag.putFloat("scale", this.scale);
+        compoundTag.putDouble("accumulator", this.accumulator);
+        compoundTag.putBoolean("frozen", this.frozen);
+
+        return compoundTag;
+    }
+
+    public static GameTimeController getServerState(MinecraftServer server) {
+        ServerLevel serverLevel = server.overworld();
+
+        return serverLevel.getDataStorage().computeIfAbsent(GameTimeController::load, GameTimeController::new, FILE_NAME);
     }
 }
