@@ -38,7 +38,7 @@ public class AggroEffect extends MobEffect {
             }
 
             if (player.tickCount % 10 == 0) {
-                S2C_RequestAggroMobListPacket.send(player, 32.f, this.duration);
+                S2C_RequestAggroMobListPacket.send(player, 48.f, this.duration);
             }
         }
     }

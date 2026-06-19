@@ -47,6 +47,18 @@
         {
             "predicate": { "custom_model_data": 11 },
             "model": "deceased_croa:item/random_box/accessories"
+        },
+        {
+            "predicate": { "custom_model_data": 12 },
+            "model": "deceased_croa:item/random_box/hidden"
+        },
+        {
+            "predicate": { "custom_model_data": 13 },
+            "model": "deceased_croa:item/random_box/weapon"
+        },
+        {
+            "predicate": { "custom_model_data": 14 },
+            "model": "deceased_croa:item/random_box/armor"
         }
     ]
 }

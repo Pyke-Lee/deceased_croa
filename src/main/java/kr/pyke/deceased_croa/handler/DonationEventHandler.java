@@ -61,6 +61,16 @@ public class DonationEventHandler {
                 S2C_PlaySoundPacket.send(player, ModSounds.BOX_OPEN, 2.f, 1.f);
             }
 
+            // 7천700원 (77개)
+            if (7700 == krwAmount) {
+                ItemStack itemStack = createRandomBox("supply", 1);
+
+                MailboxData mailboxData = MailboxData.create(itemStack.copy());
+                ModComponents.MAILBOX.get(player).addMail(mailboxData, false);
+                sendPersonalMessage(player, 16717676, String.format("§a%s§r님이 §b%s§r님에게 §e%s§r로 §6[ 보급 상자 ]§r를 후원합니다.", sender, name, notification));
+                S2C_PlaySoundPacket.send(player, ModSounds.ANC_BROADCAST, 2.f, 1.f);
+            }
+
             // 1만원 (100개)
             if (10000 == krwAmount) {
                 ItemStack itemStack = createRandomBox("croa_box", 1);
@@ -73,7 +83,7 @@ public class DonationEventHandler {
 
             // 3만원 (300개)
             if (30000 == krwAmount) {
-                player.addEffect(new MobEffectInstance(ModEffects.AGGRO, 20 * 30, 0, false, true, true));
+                player.addEffect(new MobEffectInstance(ModEffects.AGGRO, 20 * 60, 0, false, true, true));
                 sendServerMessage(player, COLOR.RED.getColor(), String.format("§a%s§r님이 §b%s§r님에게 §e%s§r로 §c[ 인간 사이렌 ]§r 이벤트를 후원합니다.", sender, name, notification));
                 sendPersonalMessage(player, COLOR.RED.getColor(), "지속적으로 소음이 발생하여 주변 몬스터들의 주의를 끕니다.");
                 sendTitle(player, "§c[!] 경고 [!]", "§c지속적으로 사이렌이 울립니다.", 20, 60, 20);
