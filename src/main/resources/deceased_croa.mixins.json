@@ -6,6 +6,7 @@
         "server.EntitySelectorParserMixin",
         "server.PlayerMixin",
         "server.ServerGamePacketListenerImplMixin",
+        "server.ServerLevelMixin",
         "server.ServerPlayerMixin"
     ],
     "client": [
