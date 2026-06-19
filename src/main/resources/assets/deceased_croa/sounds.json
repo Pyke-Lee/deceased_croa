@@ -94,5 +94,53 @@
         "sounds": [
             "deceased_croa:bjacau"
         ]
+    },
+    "custom_sound.esstree": {
+        "subtitle": "subtitles.deceased_croa.custom_sound.esstree",
+        "sounds": [
+            "deceased_croa:esstree"
+        ]
+    },
+    "custom_sound.pingman": {
+        "subtitle": "subtitles.deceased_croa.custom_sound.pingman",
+        "sounds": [
+            "deceased_croa:pingman"
+        ]
+    },
+    "custom_sound.jungryeok": {
+        "subtitle": "subtitles.deceased_croa.custom_sound.jungryeok",
+        "sounds": [
+            "deceased_croa:jungryeok"
+        ]
+    },
+    "custom_sound.nubul": {
+        "subtitle": "subtitles.deceased_croa.custom_sound.nubul",
+        "sounds": [
+            "deceased_croa:nubul"
+        ]
+    },
+    "custom_sound.suning": {
+        "subtitle": "subtitles.deceased_croa.custom_sound.suning",
+        "sounds": [
+            "deceased_croa:suning"
+        ]
+    },
+    "custom_sound.lita": {
+        "subtitle": "subtitles.deceased_croa.custom_sound.lita",
+        "sounds": [
+            "deceased_croa:lita"
+        ]
+    },
+    "custom_sound.garry": {
+        "subtitle": "subtitles.deceased_croa.custom_sound.garry",
+        "sounds": [
+            "deceased_croa:garry"
+        ]
+    },
+    "custom_sound.coin": {
+        "subtitle": "subtitles.deceased_croa.custom_sound.coin",
+        "sounds": [
+            "deceased_croa:coin"
+        ]
     }
 }

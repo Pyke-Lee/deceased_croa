@@ -58,6 +58,7 @@ public class DonationEventHandler {
                 MailboxData mailboxData = MailboxData.create(itemStack.copy());
                 ModComponents.MAILBOX.get(player).addMail(mailboxData, false);
                 sendPersonalMessage(player, 16717676, String.format("§a%s§r님이 §b%s§r님에게 §e%s§r로 §6[ 마늘 빵 3개 ]§r를 후원합니다.", sender, name, notification));
+                S2C_PlaySoundPacket.send(player, ModSounds.BOX_OPEN, 2.f, 1.f);
             }
 
             // 1만원 (100개)
@@ -67,18 +68,19 @@ public class DonationEventHandler {
                 MailboxData mailboxData = MailboxData.create(itemStack.copy());
                 ModComponents.MAILBOX.get(player).addMail(mailboxData, false);
                 sendPersonalMessage(player, 16717676, String.format("§a%s§r님이 §b%s§r님에게 §e%s§r로 §6[ 크로아 상자 ]§r를 후원합니다.", sender, name, notification));
+                S2C_PlaySoundPacket.send(player, ModSounds.ANC_BROADCAST, 2.f, 1.f);
             }
 
             // 3만원 (300개)
             if (30000 == krwAmount) {
                 player.addEffect(new MobEffectInstance(ModEffects.AGGRO, 20 * 30, 0, false, true, true));
-                sendPersonalMessage(player, COLOR.RED.getColor(), String.format("§a%s§r님이 §b%s§r님에게 §e%s§r로 §c[ 인간 사이렌 ]§r 이벤트를 후원합니다.", sender, name, notification));
+                sendServerMessage(player, COLOR.RED.getColor(), String.format("§a%s§r님이 §b%s§r님에게 §e%s§r로 §c[ 인간 사이렌 ]§r 이벤트를 후원합니다.", sender, name, notification));
                 sendPersonalMessage(player, COLOR.RED.getColor(), "지속적으로 소음이 발생하여 주변 몬스터들의 주의를 끕니다.");
                 sendTitle(player, "§c[!] 경고 [!]", "§c지속적으로 사이렌이 울립니다.", 20, 60, 20);
             }
 
-            // 4.44만원 (444개)
-            if (44400 == krwAmount) {
+            // 4.4만원 (444개)
+            if ((44400 == krwAmount && platform == PLATFORM.SOOP) || (44000 == krwAmount && platform == PLATFORM.CHZZK)) {
                 HordeManager.startHorde(player.serverLevel(), player, HORDE_TYPE.NORMAL);
                 sendServerMessage(player, COLOR.RED.getColor(), String.format("§a%s§r님이 §b%s§r님에게 §e%s§r로 §c[ 호드 나이트 ]§r를 발동 시킵니다.", sender, name, notification));
                 sendTitle(player, "§c[!] 경고 [!]", "§c호드 나이트가 시작됩니다.", 20, 60, 20);
@@ -92,7 +94,9 @@ public class DonationEventHandler {
 
                 MailboxData mailboxData = MailboxData.create(itemStack.copy());
                 ModComponents.MAILBOX.get(player).addMail(mailboxData, false);
-                sendPersonalMessage(player, 16717676, String.format("§a%s§r님이 §b%s§r님에게 §e%s§r로 §6[ 크로아 상자 12개 ]§r를 후원합니다.", sender, name, notification));
+                sendServerMessage(player, 16717676, String.format("§a%s§r님이 §b%s§r님에게 §e%s§r로 §6[ 크로아 상자 12개 ]§r를 후원합니다.", sender, name, notification));
+                sendTitle(player, "§d[!] 알림 [!]", (platform == PLATFORM.SOOP) ? "§b별풍선 1,000개§r 감사합니다!" : "§e10만 치즈§r 감사합니다!", 10, 30, 10);
+                S2C_PlaySoundPacket.send(player, ModSounds.COIN, 2.f, 1.f);
             }
 
             // 20만원 (2000개)
@@ -104,9 +108,14 @@ public class DonationEventHandler {
                 player.addEffect(new MobEffectInstance(MobEffects.DARKNESS, 20 * 5, 0, false, true, true));
             }
 
-            // 44.44만원 (4444개)
-            if (444400 == krwAmount) {
-                for (ServerPlayer target : player.level().getServer().getPlayerList().getPlayers()) {
+            // 44만원 (4444개)
+            if ((444400 == krwAmount && platform == PLATFORM.SOOP) || (440000 == krwAmount && platform == PLATFORM.CHZZK)) {
+                MinecraftServer server = player.getServer();
+                if (server == null) { return; }
+
+                for (ServerPlayer target : server.getPlayerList().getPlayers()) {
+                    if (target.isCreative() || target.isSpectator()) { continue; }
+
                     HordeManager.startHorde(target.serverLevel(), target, HORDE_TYPE.SERVER);
                     sendTitle(target, "§4[!] 경고 [!]", "§4땅울림이 시작 됩니다.", 20, 60, 20);
                     S2C_PlaySoundPacket.send(target, ModSounds.HORDE_SPAWN, 1.f, 1.f);

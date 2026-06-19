@@ -54,5 +54,6 @@ public class DeceasedCroa implements ModInitializer {
 		CommandRegistrationCallback.EVENT.register(HordeCommand::register);
 		CommandRegistrationCallback.EVENT.register(TeleportCommand::register);
 		CommandRegistrationCallback.EVENT.register(GameTimeCommand::register);
+		CommandRegistrationCallback.EVENT.register(HelpCommand::register);
 	}
 }

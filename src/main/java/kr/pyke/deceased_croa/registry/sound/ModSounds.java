@@ -22,7 +22,15 @@ public class ModSounds {
     public static final SoundEvent SIREN_0 = register("custom_sound.siren.0");
     public static final SoundEvent HORDE_SPAWN = register("custom_sound.horde_spawn");
     public static final SoundEvent HORDE = register("custom_sound.horde");
-    public static final SoundEvent BJACAU = register("custom_sound.bjacau");
+    public static final SoundEvent ACAU = register("custom_sound.bjacau");
+    public static final SoundEvent MANDEUK = register("custom_sound.esstree");
+    public static final SoundEvent PINGMAN = register("custom_sound.pingman");
+    public static final SoundEvent JUNGRYEOK = register("custom_sound.jungryeok");
+    public static final SoundEvent NUBUL = register("custom_sound.nubul");
+    public static final SoundEvent SUNING = register("custom_sound.suning");
+    public static final SoundEvent LITA = register("custom_sound.lita");
+    public static final SoundEvent GARRY = register("custom_sound.garry");
+    public static final SoundEvent COIN = register("custom_sound.coin");
 
     private ModSounds() { }
 
