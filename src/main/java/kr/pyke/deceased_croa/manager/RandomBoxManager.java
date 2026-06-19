@@ -10,6 +10,7 @@ import kr.pyke.deceased_croa.network.pakcet.s2c.S2C_PlayItemActivationPacket;
 import kr.pyke.deceased_croa.network.pakcet.s2c.S2C_PlaySoundPacket;
 import kr.pyke.deceased_croa.registry.component.ModComponents;
 import kr.pyke.deceased_croa.type.MESSAGE_TYPE;
+import kr.pyke.deceased_croa.util.Utils;
 import kr.pyke.util.constants.COLOR;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.ChatFormatting;
@@ -321,16 +322,11 @@ public class RandomBoxManager {
         String itemName = stack.getHoverName().getString();
         String message = template
             .replace("%player%", player.getDisplayName().getString())
-            .replace("%item%", itemName.strip())
+            .replace("%item%", Utils.stripFormatting(itemName))
             .replace("%count%", String.valueOf(stack.getCount()));
 
         MESSAGE_TYPE messageType = reward.resolveMessageType(box);
         messageType.send(player, COLOR.GOLD.getColor(), message);
-    }
-
-    private static String stripFormatting(String value) {
-        String stripped = ChatFormatting.stripFormatting(value);
-        return stripped == null ? value : stripped;
     }
 
     private static void playItemActivation(ServerPlayer player, RandomBoxDefinition box, RandomBoxReward reward, ItemStack stack) {

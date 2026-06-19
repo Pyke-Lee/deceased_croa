@@ -21,6 +21,8 @@ public class ModSounds {
     public static final SoundEvent KKOKKIO = register("custom_sound.kkokkio");
     public static final SoundEvent SIREN_0 = register("custom_sound.siren.0");
     public static final SoundEvent HORDE_SPAWN = register("custom_sound.horde_spawn");
+    public static final SoundEvent HORDE = register("custom_sound.horde");
+    public static final SoundEvent BJACAU = register("custom_sound.bjacau");
 
     private ModSounds() { }
 

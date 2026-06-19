@@ -74,14 +74,14 @@ public class DonationEventHandler {
                 player.addEffect(new MobEffectInstance(ModEffects.AGGRO, 20 * 30, 0, false, true, true));
                 sendPersonalMessage(player, COLOR.RED.getColor(), String.format("§a%s§r님이 §b%s§r님에게 §e%s§r로 §c[ 인간 사이렌 ]§r 이벤트를 후원합니다.", sender, name, notification));
                 sendPersonalMessage(player, COLOR.RED.getColor(), "지속적으로 소음이 발생하여 주변 몬스터들의 주의를 끕니다.");
-                sendTitle(player, "§c[!] 경고 [!]", "인간 사이렌 이벤트 발생!", 20, 60, 20);
+                sendTitle(player, "§c[!] 경고 [!]", "§c지속적으로 사이렌이 울립니다.", 20, 60, 20);
             }
 
             // 4.44만원 (444개)
             if (44400 == krwAmount) {
                 HordeManager.startHorde(player.serverLevel(), player, HORDE_TYPE.NORMAL);
                 sendServerMessage(player, COLOR.RED.getColor(), String.format("§a%s§r님이 §b%s§r님에게 §e%s§r로 §c[ 호드 나이트 ]§r를 발동 시킵니다.", sender, name, notification));
-                sendTitle(player, "§c[!] 경고 [!]", "호드 나이트 발생!", 20, 60, 20);
+                sendTitle(player, "§c[!] 경고 [!]", "§c호드 나이트가 시작됩니다.", 20, 60, 20);
                 S2C_PlaySoundPacket.send(player, ModSounds.NORMAL_HORDES, 1.f, 1.f);
                 player.addEffect(new MobEffectInstance(MobEffects.DARKNESS, 20 * 5, 0, false, true, true));
             }
@@ -99,18 +99,21 @@ public class DonationEventHandler {
             if (200000 == krwAmount) {
                 HordeManager.startHorde(player.serverLevel(), player, HORDE_TYPE.SPECIAL);
                 broadcastMessage(player, COLOR.RED.getColor(), String.format("§a%s§r님이 §b%s§r님에게 §e%s§r로 §c[ 좀비 대재앙 ]§r을 발동 시킵니다.", sender, name, notification));
-                sendTitle(player, "§c[!] 경고 [!]", "좀비 대재앙 발생!", 20, 60, 20);
+                sendTitle(player, "§c[!] 경고 [!]", "§c좀비 대재앙이 발생합니다.", 20, 60, 20);
                 S2C_PlaySoundPacket.send(player, SoundEvents.WITHER_DEATH, 1.f, 1.f);
                 player.addEffect(new MobEffectInstance(MobEffects.DARKNESS, 20 * 5, 0, false, true, true));
             }
 
             // 44.44만원 (4444개)
             if (444400 == krwAmount) {
-                HordeManager.startHorde(player.serverLevel(), player, HORDE_TYPE.SERVER);
+                for (ServerPlayer target : player.level().getServer().getPlayerList().getPlayers()) {
+                    HordeManager.startHorde(target.serverLevel(), target, HORDE_TYPE.SERVER);
+                    sendTitle(target, "§4[!] 경고 [!]", "§4땅울림이 시작 됩니다.", 20, 60, 20);
+                    S2C_PlaySoundPacket.send(target, ModSounds.HORDE_SPAWN, 1.f, 1.f);
+                    S2C_PlaySoundPacket.send(target, ModSounds.HORDE, 3.f, 1.f);
+                    target.addEffect(new MobEffectInstance(MobEffects.DARKNESS, 20 * 5, 0, false, true, true));
+                }
                 broadcastMessage(player, COLOR.RED.getColor(), String.format("§a%s§r님이 §b%s§r님에게 §e%s§r로 §4[ 전체 땅울림 ]§r을 발동 시킵니다.", sender, name, notification));
-                sendTitle(player, "§c[!] 경고 [!]", "전체 땅울림 발생!", 20, 60, 20);
-                S2C_PlaySoundPacket.send(player, ModSounds.HORDE_SPAWN, 1.f, 1.f);
-                player.addEffect(new MobEffectInstance(MobEffects.DARKNESS, 20 * 5, 0, false, true, true));
             }
         });
     }

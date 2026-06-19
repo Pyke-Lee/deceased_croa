@@ -2,6 +2,7 @@ package kr.pyke.deceased_croa.util;
 
 import com.mojang.blaze3d.platform.InputConstants;
 import kr.pyke.deceased_croa.DeceasedCroa;
+import kr.pyke.deceased_croa.client.gui.screen.TeleportScreen;
 import kr.pyke.deceased_croa.client.key.ModKeyBinding;
 import kr.pyke.deceased_croa.client.sound.NotificationSoundInstance;
 import kr.pyke.deceased_croa.network.pakcet.s2c.S2C_PlayItemActivationPacket;
@@ -95,5 +96,9 @@ public class ClientHelper {
                 ModCreativeTabs.TELEPORT_RUNE.buildContents(parameters);
                 break;
         }
+    }
+
+    public static void openTeleportScreen() {
+        Minecraft.getInstance().setScreen(new TeleportScreen());
     }
 }

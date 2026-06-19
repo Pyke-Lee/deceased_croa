@@ -82,5 +82,17 @@
         "sounds": [
             "deceased_croa:horde_spawn"
         ]
+    },
+    "custom_sound.horde": {
+        "subtitle": "subtitles.deceased_croa.custom_sound.horde",
+        "sounds": [
+            "deceased_croa:horde"
+        ]
+    },
+    "custom_sound.bjacau": {
+        "subtitle": "subtitles.deceased_croa.custom_sound.bjacau",
+        "sounds": [
+            "deceased_croa:bjacau"
+        ]
     }
 }

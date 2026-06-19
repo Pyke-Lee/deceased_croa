@@ -34,17 +34,16 @@ public class ServerLivingEntityEventHandler {
 
         ServerLivingEntityEvents.ALLOW_DEATH.register(((entity, damageSource, damageAmount) -> {
             if (entity instanceof Player player) {
-                ModComponents.DECEASED_INFO.get(player).setReturnTeleportEntry();
+                IDeceasedInfo info = ModComponents.DECEASED_INFO.get(player);
+                info.setReturnTeleportEntry();
+                info.saveItems();
             }
 
             return true;
         }));
 
         ServerPlayerEvents.AFTER_RESPAWN.register(((oldPlayer, newPlayer, alive) -> {
-            ItemStack itemStack = new ItemStack(ModItems.TELEPORT_RUNE);
-            itemStack.getOrCreateTag().putString("teleport_id", "shop");
-
-            newPlayer.addItem(itemStack);
+            ModComponents.DECEASED_INFO.get(newPlayer).loadItems();
         }));
     }
 }

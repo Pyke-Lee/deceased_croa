@@ -1,12 +1,16 @@
 package kr.pyke.deceased_croa.manager;
 
+import kr.pyke.PykeLib;
+import kr.pyke.deceased_croa.DeceasedCroa;
 import kr.pyke.deceased_croa.config.ConfigLoader;
 import kr.pyke.deceased_croa.config.HordeConfig;
 import kr.pyke.deceased_croa.type.HORDE_TYPE;
+import kr.pyke.util.constants.COLOR;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
@@ -32,7 +36,7 @@ public class HordeManager {
 
     private static class ActiveHorde {
         final ServerLevel level;
-        final Player player;
+        final ServerPlayer player;
         final List<HordeConfig.MobEntry> entries;
         final int interval;
         final int glowDuration;
@@ -40,7 +44,7 @@ public class HordeManager {
         int index = 0;
         int ticksUntilNext = 0;
 
-        ActiveHorde(ServerLevel level, Player player, List<HordeConfig.MobEntry> entries, int interval, int glowDuration, int spawnRadius) {
+        ActiveHorde(ServerLevel level, ServerPlayer player, List<HordeConfig.MobEntry> entries, int interval, int glowDuration, int spawnRadius) {
             this.level = level;
             this.player = player;
             this.entries = entries;
@@ -50,7 +54,7 @@ public class HordeManager {
         }
     }
 
-    public static void startHorde(ServerLevel level, Player player, HORDE_TYPE hordeType) {
+    public static void startHorde(ServerLevel level, ServerPlayer player, HORDE_TYPE hordeType) {
         HordeConfig config = ConfigLoader.getHordeConfig();
 
         List<HordeConfig.MobEntry> entries;
@@ -64,7 +68,7 @@ public class HordeManager {
             interval = config.special_spawn_interval;
         }
         else {
-            entries = config.server_hordes;
+            entries = config.server_horde_mobs;
             interval = config.server_spawn_interval;
         }
         if (entries.isEmpty()) { return; }
@@ -104,7 +108,7 @@ public class HordeManager {
 
     private static void spawnEntry(ActiveHorde horde, HordeConfig.MobEntry entry) {
         ServerLevel level = horde.level;
-        Player player = horde.player;
+        ServerPlayer player = horde.player;
         RandomSource random = level.getRandom();
 
         EntityType<?> type = resolveType(entry.entity);

@@ -3,12 +3,18 @@ package kr.pyke.deceased_croa.registry.component.info;
 import kr.pyke.deceased_croa.DeceasedCroa;
 import kr.pyke.deceased_croa.data.TeleportData;
 import kr.pyke.deceased_croa.registry.component.ModComponents;
+import kr.pyke.deceased_croa.registry.item.ModItems;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.level.Level;
+import net.minecraft.world.item.ItemStack;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 public class DeceasedInfo implements IDeceasedInfo {
@@ -17,6 +23,8 @@ public class DeceasedInfo implements IDeceasedInfo {
     private int highMonsterKillCount;
 
     private TeleportData.TeleportEntry teleportEntry;
+
+    private final List<ItemStack> savedItems = new ArrayList<>();
 
     public DeceasedInfo(Player player) {
         this.player = player;
@@ -30,6 +38,12 @@ public class DeceasedInfo implements IDeceasedInfo {
         if (tag.contains("teleportEntry")) {
             this.teleportEntry = TeleportData.TeleportEntry.fromNbt(tag.getCompound("teleportEntry"));
         }
+
+        savedItems.clear();
+        ListTag savedList = tag.getList("savedItems", Tag.TAG_COMPOUND);
+        for (int i = 0; i < savedList.size(); i++) {
+            savedItems.add(ItemStack.of(savedList.getCompound(i)));
+        }
     }
 
     @Override
@@ -40,6 +54,12 @@ public class DeceasedInfo implements IDeceasedInfo {
         if (this.teleportEntry != null) {
             tag.put("teleportEntry", this.teleportEntry.toNbt());
         }
+
+        ListTag savedList = new ListTag();
+        for (ItemStack itemStack : savedItems) {
+            savedList.add(itemStack.save(new CompoundTag()));
+        }
+        tag.put("savedItems", savedList);
     }
 
     public void addMonsterKillCount(int value) {
@@ -49,7 +69,6 @@ public class DeceasedInfo implements IDeceasedInfo {
 
         if (this.monsterKillCount > this.highMonsterKillCount) {
             this.highMonsterKillCount = this.monsterKillCount;
-            DeceasedCroa.LOGGER.info(String.valueOf(this.highMonsterKillCount));
         }
 
         ModComponents.DECEASED_INFO.sync(player);
@@ -119,5 +138,34 @@ public class DeceasedInfo implements IDeceasedInfo {
 
         ServerLevel level = server.getLevel(this.teleportEntry.dim());
         return level != null;
+    }
+
+    public void saveItems() {
+        if (player.isLocalPlayer()) { return; }
+
+        Inventory inventory = player.getInventory();
+        for (int i = 0; i < inventory.items.size(); i++) {
+            ItemStack itemStack = inventory.items.get(i);
+            if (itemStack.isEmpty()) { continue; }
+
+            if (itemStack.is(ModItems.KEEP_ITEM)) {
+                savedItems.add(itemStack.copy());
+                inventory.items.set(i, ItemStack.EMPTY);
+            }
+        }
+
+        ModComponents.DECEASED_INFO.sync(player);
+    }
+
+    public void loadItems() {
+        if (player.isLocalPlayer()) { return; }
+
+        Inventory inventory = player.getInventory();
+        for (ItemStack itemStack : savedItems) {
+            inventory.add(itemStack);
+        }
+
+        savedItems.clear();
+        ModComponents.DECEASED_INFO.sync(player);
     }
 }

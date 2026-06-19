@@ -6,6 +6,7 @@ import kr.pyke.deceased_croa.data.RandomBoxReward;
 import kr.pyke.deceased_croa.manager.RandomBoxManager;
 import kr.pyke.deceased_croa.registry.item.ModItems;
 import kr.pyke.deceased_croa.util.ClientHelper;
+import kr.pyke.deceased_croa.util.Utils;
 import net.minecraft.ChatFormatting;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -88,7 +89,7 @@ public class RandomBoxItem extends Item {
                 double percent = totalWeight > 0 ? (double) Math.max(0, reward.weight()) / (double) totalWeight * 100d : 0d;
                 line = String.format("%s x%d - %.1f%%", itemName, reward.count(), percent);
             }
-            tooltip.add(Component.literal(line.strip()).withStyle(ChatFormatting.GRAY));
+            tooltip.add(Component.literal(Utils.stripFormatting(line)).withStyle(ChatFormatting.GRAY));
         }
 
         int remaining = rewards.size() - shown;

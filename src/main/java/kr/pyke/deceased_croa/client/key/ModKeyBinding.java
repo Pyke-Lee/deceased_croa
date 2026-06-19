@@ -13,6 +13,7 @@ public class ModKeyBinding {
     public static KeyMapping rankingKey;
     public static KeyMapping openMailboxKey;
     public static KeyMapping detailsRandomBoxKey;
+    public static KeyMapping clearToastsKey;
 
     private ModKeyBinding() { }
 
@@ -38,9 +39,20 @@ public class ModKeyBinding {
             "category.deceased_croa.randombox"
         ));
 
+        clearToastsKey = KeyBindingHelper.registerKeyBinding(new KeyMapping(
+            "key.deceased_croa.toast.clear",
+            InputConstants.Type.KEYSYM,
+            GLFW.GLFW_KEY_SEMICOLON,
+            "category.deceased_croa.general"
+        ));
+
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
             while (openMailboxKey.consumeClick()) {
                 C2S_OpenMailboxPacket.send();
+            }
+
+            while (clearToastsKey.consumeClick()) {
+                client.getToasts().clear();
             }
         });
     }

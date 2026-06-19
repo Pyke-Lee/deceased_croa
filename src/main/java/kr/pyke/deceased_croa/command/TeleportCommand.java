@@ -46,7 +46,7 @@ public class TeleportCommand {
     private static int giveShopTeleportRune(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
         ServerPlayer player = context.getSource().getPlayerOrException();
 
-        ItemStack itemStack = new ItemStack(ModItems.TELEPORT_RUNE);
+        ItemStack itemStack = new ItemStack(ModItems.GREEN_RUNE);
         itemStack.getOrCreateTag().putString("teleport_id", "shop");
 
         if (player.addItem(itemStack)) {

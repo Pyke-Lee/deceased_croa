@@ -35,6 +35,7 @@ public class MailboxCommand {
             )
             .then(Commands.literal("debug").executes(MailboxCommand::debug))
         );
+        dispatcher.register(Commands.literal("모두받기").executes(MailboxCommand::claimAllMailbox));
     }
 
     public static int openMailbox(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
@@ -84,6 +85,15 @@ public class MailboxCommand {
             PykeLib.sendSystemMessage(target, COLOR.RED.getColor(), "관리자가 당신의 메일함을 초기화하였습니다.");
         }
         PykeLib.sendSystemMessage(player, COLOR.LIME.getColor(), String.format("§e%s§r명의 메일함을 초기화하였습니다.", players.size()));
+
+        return 1;
+    }
+
+    public static int claimAllMailbox(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
+        ServerPlayer player = context.getSource().getPlayerOrException();
+
+        int count = ModComponents.MAILBOX.get(player).claimAllMails(player);
+        PykeLib.sendSystemMessage(player, COLOR.LIME.getColor(), String.format("메일 §e%s§r개를 모두 받으셨습니다.", count));
 
         return 1;
     }

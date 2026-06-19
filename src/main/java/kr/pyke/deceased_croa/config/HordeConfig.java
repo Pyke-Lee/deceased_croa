@@ -1,6 +1,7 @@
 package kr.pyke.deceased_croa.config;
 
 import com.google.gson.annotations.SerializedName;
+import kr.pyke.deceased_croa.DeceasedCroa;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,8 +13,8 @@ public class HordeConfig {
     @SerializedName("special_horde_mobs")
     public List<MobEntry> special_hordeMobs = new ArrayList<>();
 
-    @SerializedName("server_hordes")
-    public List<MobEntry> server_hordes = new ArrayList<>();
+    @SerializedName("server_horde_mobs")
+    public List<MobEntry> server_horde_mobs = new ArrayList<>();
 
     @SerializedName("normal_spawn_interval")
     public int normal_spawn_interval = 10;
@@ -43,6 +44,11 @@ public class HordeConfig {
             this.entity = entity;
             this.min_spawns = min_spawns;
             this.max_spawns = max_spawns;
+
+            if (this.min_spawns == 0 && this.max_spawns == 0) {
+                this.min_spawns = 1;
+                this.max_spawns = 1;
+            }
         }
     }
 }

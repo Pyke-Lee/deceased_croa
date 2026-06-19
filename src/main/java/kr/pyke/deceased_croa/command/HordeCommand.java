@@ -27,7 +27,7 @@ import java.util.Collection;
 import java.util.Set;
 
 public class HordeCommand {
-    private static final SuggestionProvider<CommandSourceStack> HORDE_TYPE_SUGGEST = ((context, builder) -> SharedSuggestionProvider.suggest(Set.of("normal", "special"), builder));
+    private static final SuggestionProvider<CommandSourceStack> HORDE_TYPE_SUGGEST = ((context, builder) -> SharedSuggestionProvider.suggest(Set.of("normal", "special", "server"), builder));
 
     public static void register(CommandDispatcher<CommandSourceStack> dispatcher, CommandBuildContext context, Commands.CommandSelection selection) {
         dispatcher.register(Commands.literal("호드")

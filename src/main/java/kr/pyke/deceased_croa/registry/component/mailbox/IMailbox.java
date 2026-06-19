@@ -13,4 +13,5 @@ public interface IMailbox extends ComponentV3, AutoSyncedComponent {
     void removeMail(MailboxData mail);
     void clearAll();
     void claimMail(Player player, MailboxData mail);
+    int claimAllMails(Player player);
 }

@@ -4,6 +4,7 @@ import kr.pyke.PykeLib;
 import kr.pyke.deceased_croa.data.DisplayNameData;
 import kr.pyke.deceased_croa.network.pakcet.s2c.S2C_SendSingleDisplayName;
 import kr.pyke.util.constants.COLOR;
+import net.minecraft.ChatFormatting;
 import net.minecraft.network.protocol.game.ClientboundPlayerInfoUpdatePacket;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
@@ -48,5 +49,10 @@ public class Utils {
         refreshTabList(target);
 
         PykeLib.sendSystemMessage(target, COLOR.LIME.getColor(), String.format("&f이름이 &7%s&f(으)로 변경되었습니다.", displayName));
+    }
+
+    public static String stripFormatting(String value) {
+        String stripped = ChatFormatting.stripFormatting(value);
+        return stripped == null ? value : stripped;
     }
 }

@@ -3,6 +3,7 @@ package kr.pyke.deceased_croa.network;
 import kr.pyke.deceased_croa.network.pakcet.c2s.C2S_ClaimMailPacket;
 import kr.pyke.deceased_croa.network.pakcet.c2s.C2S_OpenMailboxPacket;
 import kr.pyke.deceased_croa.network.pakcet.c2s.C2S_ResponseAggroMobListPacket;
+import kr.pyke.deceased_croa.network.pakcet.c2s.C2S_TeleportToPlayerPacket;
 import kr.pyke.deceased_croa.network.pakcet.s2c.*;
 
 public class DeceasedPacket {
@@ -12,6 +13,7 @@ public class DeceasedPacket {
         C2S_ResponseAggroMobListPacket.register();
         C2S_OpenMailboxPacket.register();
         C2S_ClaimMailPacket.register();
+        C2S_TeleportToPlayerPacket.register();
     }
 
     public static void registerClient() {

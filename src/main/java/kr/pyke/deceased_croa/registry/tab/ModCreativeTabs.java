@@ -38,6 +38,7 @@ public class ModCreativeTabs {
             .displayItems((parameters, output) -> {
                 output.accept(ModItems.CROA_COIN);
                 output.accept(ModItems.GALIC_BREAD);
+                output.accept(ModItems.TICKET);
             })
             .build()
     );
@@ -47,15 +48,16 @@ public class ModCreativeTabs {
         new ResourceLocation(DeceasedCroa.MOD_ID, "teleport_rune"),
         FabricItemGroup.builder()
             .title(Component.literal("이동의 룬"))
-            .icon(() -> new ItemStack(ModItems.TELEPORT_RUNE))
+            .icon(() -> new ItemStack(ModItems.GREEN_RUNE))
             .displayItems((parameters, output) -> {
                 for (String id : ClientCache.getTeleportEntries().keySet()) {
-                    ItemStack stack = new ItemStack(ModItems.TELEPORT_RUNE);
+                    ItemStack stack = new ItemStack(ModItems.GREEN_RUNE);
                     stack.getOrCreateTag().putString("teleport_id", id);
 
                     output.accept(stack);
                 }
-                output.accept(ModItems.RETURN_RUNE);
+                output.accept(ModItems.RED_RUNE);
+                output.accept(ModItems.YELLOW_RUNE);
             })
             .build()
     );

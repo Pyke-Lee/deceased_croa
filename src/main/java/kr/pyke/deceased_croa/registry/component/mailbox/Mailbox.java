@@ -52,13 +52,31 @@ public class Mailbox implements IMailbox {
     public void claimMail(Player player, MailboxData mail) {
         ItemStack copyItem = mail.itemStack().copy();
         player.getInventory().add(copyItem);
-
         if (!copyItem.isEmpty()) {
-            player.drop(copyItem, false);
+            player.drop(copyItem, true);
         }
 
         mailboxData.remove(mail);
         ModComponents.MAILBOX.sync(player);
+    }
+
+    @Override
+    public int claimAllMails(Player player) {
+        List<MailboxData> mails = List.copyOf(mailboxData);
+        int count = mails.size();
+
+        for (MailboxData mail : mails) {
+            ItemStack copyItem = mail.itemStack().copy();
+            player.getInventory().add(copyItem);
+            if (!copyItem.isEmpty()) {
+                player.drop(copyItem, true);
+            }
+
+            mailboxData.remove(mail);
+            ModComponents.MAILBOX.sync(player);
+        }
+
+        return count;
     }
 
     @Override
