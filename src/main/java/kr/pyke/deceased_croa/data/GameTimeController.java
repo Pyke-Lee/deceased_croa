@@ -14,10 +14,16 @@ public class GameTimeController extends SavedData {
     private boolean frozen = false;
 
     public float getScale() { return this.scale; }
-    public void setScale(float scale) { this.scale = Math.max(0.f, scale); }
+    public void setScale(float scale) {
+        this.scale = Math.max(0.f, scale);
+        setDirty();
+    }
 
     public boolean isFrozen() { return frozen; }
-    public void setFrozen(boolean frozen) { this.frozen = frozen; }
+    public void setFrozen(boolean frozen) {
+        this.frozen = frozen;
+        setDirty();
+    }
 
     public long consumeDelta() {
         if (this.frozen) { return 0L; }
@@ -30,6 +36,7 @@ public class GameTimeController extends SavedData {
 
     public void reset() {
         this.accumulator = 0.d;
+        setDirty();
     }
 
     public static GameTimeController load(CompoundTag tag) {
